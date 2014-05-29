@@ -10,6 +10,6 @@ public class FolderList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_folder_list);
+		//setContentView(R.layout.activity_folder_list);
 	}
 }

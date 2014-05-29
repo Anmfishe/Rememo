@@ -1,67 +1,84 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id = "@+id/container" 
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.TaylorIsCool.memobox2.MainActivity$PlaceholderFragment" >
+    tools:context="ucsc.lmcghee.rememo.MainActivity"
+    tools:ignore="MergeRootFrame" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="158dp"
-        android:layout_weight="1"
-        android:text="Recordings" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/Button02"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="162dp"
-        android:layout_weight="1"
-        android:text="Listen" />
+        <Button
+            android:id="@+id/viewSavedRecordingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/deleteButton"
+            android:layout_alignBottom="@+id/deleteButton"
+            android:layout_marginLeft="29dp"
+            android:layout_toRightOf="@+id/recordButton"
+            android:onClick="viewSaved"
+            android:text="View Saved" />
 
-    <Button
-        android:id="@+id/Button04"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/Button02"
-        android:layout_alignParentBottom="true"
-        android:layout_weight="1"
-        android:text="Speaker" />
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/recordButton"
+            android:layout_marginTop="54dp"
+            android:text="delete" />
 
-    <Button
-        android:id="@+id/Button05"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/Button04"
-        android:layout_weight="1"
-        android:text="Options" />
+        <Button
+            android:id="@+id/recordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/saveButton"
+            android:layout_marginTop="39dp"
+            android:onClick="startRecording"
+            android:text="record" />
 
-    <Button
-        android:id="@+id/button2"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="169dp"
-        android:text="Record" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/statusText"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="58dp"
+            android:text="Status:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp"
-        android:text="Recording"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/viewSavedRecordingsButton"
+            android:layout_below="@+id/textView2"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/deleteButton"
+            android:layout_marginTop="15dp"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/Button01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/statusText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="27dp"
+            android:onClick="stopRecording"
+            android:text="Stop" />
+
+    </RelativeLayout>
+
+</FrameLayout>
+
