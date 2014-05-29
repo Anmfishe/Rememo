@@ -1,8 +1,5 @@
-/*
- * Andrew Fisher
- * Logan McGhee
- * Taylor Owen
- */
+// VoiceRecorder.java
+// Main Activity for the VoiceRecorder class.
 package ucsc.lmcghee.rememo;
 
 import java.io.File;
@@ -30,41 +27,59 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class VoiceRecorder extends Activity{
+public class VoiceRecorder extends Activity 
+{
    private static final String TAG = VoiceRecorder.class.getName();	
    private MediaRecorder recorder; // used to record audio
+   //private Handler handler; // Handler for updating the visualizer
    private boolean recording; // are we currently recording
    public File tmpFile;
    
+   // variables for GUI
+   //private VisualizerView visualizer; 
+   //private ToggleButton recordButton;
+   //private Button saveButton;
+   //private Button deleteButton;
+   //private Button viewSavedRecordingsButton;
    
    // called when the activity is first created
    @Override
-   public void onCreate(Bundle savedInstanceState){
+   public void onCreate(Bundle savedInstanceState) 
+   {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main); // set the Activity's layout
       
-   } 
+         
+      //visualizer = (VisualizerView) findViewById(R.id.visualizerView);
+      
+      //handler = new Handler(); // create the Handler for visualizer update
+   } // end method onCreate
    
-   
+   // create the MediaRecorder
    @Override
-   protected void onResume(){
+   protected void onResume()
+   {
       super.onResume();
-   } 
+      
+      // register recordButton's listener
+      //recordButton.setOnCheckedChangeListener(recordButtonListener);
+   } // end method onResume
    
    // release the MediaRecorder
    @Override
-   protected void onPause(){
+   protected void onPause()
+   {
       super.onPause();
+      //recordButton.setOnCheckedChangeListener(null); // remove listener
       
       if (recorder != null)
       {
          recorder.release(); // release MediaRecorder resources
          recording = false; // we are no longer recording
          recorder = null; 
-      } 
-   } 
+      } // end if
+   } // end method onPause
 
-   
    public void startRecording(View v){
        Log.d("startRecording", "Start Button Pressed.");
        
@@ -101,11 +116,13 @@ public class VoiceRecorder extends Activity{
    } 
    
    public void stopRecording(View v){
-       recorder.stop();   // stop recording
-       recorder.reset();  // reset the MediaRecorder
+       recorder.stop(); // stop recording
+       recorder.reset(); // reset the MediaRecorder
        recording = false; // we are no longer recording
        TextView tv = (TextView) findViewById(R.id.statusText);
        tv.setText("stopped");
+       //saveButton.setEnabled(true); // enable saveButton
+       //deleteButton.setEnabled(true); // enable deleteButton
 	   
    }
    
@@ -123,12 +140,30 @@ public class VoiceRecorder extends Activity{
 	   return time;
    }
    
-   // Open saveRecordings class on button press.
    public void viewSaved(View v){ 
-	   Intent intent = new Intent(VoiceRecorder.this, SavedRecordings.class);
-       startActivity(intent);
+	   Intent intent = 
+           new Intent(VoiceRecorder.this, SavedRecordings.class);
+        startActivity(intent);
+	   
    }
    
 
-} 
+} // end class VoiceRecorder
 
+
+
+
+/**************************************************************************
+ * (C) Copyright 1992-2012 by Deitel & Associates, Inc. and               *
+ * Pearson Education, Inc. All Rights Reserved.                           *
+ *                                                                        *
+ * DISCLAIMER: The authors and publisher of this book have used their     *
+ * best efforts in preparing the book. These efforts include the          *
+ * development, research, and testing of the theories and programs        *
+ * to determine their effectiveness. The authors and publisher make       *
+ * no warranty of any kind, expressed or implied, with regard to these    *
+ * programs or to the documentation contained in these books. The authors *
+ * and publisher shall not be liable in any event for incidental or       *
+ * consequential damages in connection with, or arising out of, the       *
+ * furnishing, performance, or use of these programs.                     *
+ **************************************************************************/
