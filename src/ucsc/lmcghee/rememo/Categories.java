@@ -18,6 +18,7 @@ import java.util.List;
 
 
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -50,7 +51,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class Categories extends Activity {
     ListView listView ;
-    private ArrayAdapter<String> adapter;
+    ArrayAdapter<String> adapter;
+    String create;
     String[] values;
     ArrayList<String> values2;
     
@@ -65,8 +67,13 @@ public class Categories extends Activity {
 
         
         // Defined Array values to show in ListView
+        values = getExternalFilesDir(null).list();
         values2 = new ArrayList<String>(
                 Arrays.asList(getExternalFilesDir(null).list()));
+        create = "Create New Category";
+        values2.add(create);
+        values = values2.toArray(new String[0]);
+        
 
         
     	
@@ -100,9 +107,19 @@ public class Categories extends Activity {
                // ListView Clicked item value
                String  itemValue    = (String) listView.getItemAtPosition(position);
                Log.d("WHAT", itemValue);
+               if(itemValue.equals(create)){
+            	   values[position] = "New Category Here!";
+            	   values2.clear();
+            	   values2.addAll(Arrays.asList(values));
+            	   values2.add(create);
+            	   values = values2.toArray(new String[0]);
+            	   adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
+                   listView.setAdapter(adapter);
+               }else{
                Intent intent = new Intent(Categories.this, SavedRecordings.class);
                intent.putExtra("KEY", itemValue);
                startActivity(intent);
+               }
                 // Show Alert
              
               }
