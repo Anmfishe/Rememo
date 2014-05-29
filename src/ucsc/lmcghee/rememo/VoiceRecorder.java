@@ -13,8 +13,10 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -23,73 +25,64 @@ public class VoiceRecorder extends Activity
 {
    private static final String TAG = VoiceRecorder.class.getName();	
    private MediaRecorder recorder; // used to record audio
-   //private Handler handler; // Handler for updating the visualizer
    private boolean recording; // are we currently recording
    public File tmpFile;
+   AudioManager am;
+   boolean speakerON;
    
-   // variables for GUI
-   //private VisualizerView visualizer; 
-   //private ToggleButton recordButton;
-   //private Button saveButton;
-   //private Button deleteButton;
-   //private Button viewSavedRecordingsButton;
-   
-   // called when the activity is first created
    @Override
    public void onCreate(Bundle savedInstanceState) 
    {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_main); // set the Activity's layout
-      
-         
-      //visualizer = (VisualizerView) findViewById(R.id.visualizerView);
-      
-      //handler = new Handler(); // create the Handler for visualizer update
-   } // end method onCreate
+      setContentView(R.layout.activity_main);
+      am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+	  am.setMode(AudioManager.MODE_NORMAL);
+	  am.setSpeakerphoneOn(false);
+	  speakerON = false;
+	  createDir("Homework");
+	  createDir("New Memos");
+	  createDir("Groccerries");
+   } 
    
    // create the MediaRecorder
    @Override
    protected void onResume()
    {
       super.onResume();
-      
-      // register recordButton's listener
-      //recordButton.setOnCheckedChangeListener(recordButtonListener);
    } // end method onResume
    
-   // release the MediaRecorder
    @Override
    protected void onPause()
    {
       super.onPause();
-      //recordButton.setOnCheckedChangeListener(null); // remove listener
-      
       if (recorder != null)
       {
          recorder.release(); // release MediaRecorder resources
          recording = false; // we are no longer recording
          recorder = null; 
-      } // end if
-   } // end method onPause
-
+      } 
+   } 
+   
+   public void createDir(String s){
+		File direct =  getExternalFilesDir(s);
+			//direct.mkdir();
+		}
+   
+   
    public void startRecording(View v){
        Log.d("startRecording", "Start Button Pressed.");
-       
-	// create MediaRecorder and configure recording options
        if (recorder == null)
           recorder = new MediaRecorder(); // create MediaRecorder 
        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-       recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-       recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+       recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+       recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
        recorder.setAudioEncodingBitRate(16);
-       recorder.setAudioSamplingRate(44100);
-       
-       
+       recorder.setAudioSamplingRate(44100);       
        try{
     	  // Create a file for the audio to be saved into
     	  File newFile = new File(
-            		 getExternalFilesDir("New Memos").getAbsolutePath() + 
-            		 File.separator + getTime() + ".aac");
+            		 getExternalFilesDir("Default").getAbsolutePath() + 
+            		 File.separator + getTime() + ".3gp");
          
           recorder.setOutputFile(newFile.getAbsolutePath());
           recorder.prepare(); // prepare to record   
@@ -97,7 +90,6 @@ public class VoiceRecorder extends Activity
           recording = true; // we are currently recording
           TextView tv = (TextView) findViewById(R.id.statusText);
           tv.setText("recording");
-          
        } // end try
        catch (IllegalStateException e){
           Log.e(TAG, e.toString());
@@ -113,13 +105,9 @@ public class VoiceRecorder extends Activity
        recording = false; // we are no longer recording
        TextView tv = (TextView) findViewById(R.id.statusText);
        tv.setText("stopped");
-       //saveButton.setEnabled(true); // enable saveButton
-       //deleteButton.setEnabled(true); // enable deleteButton
-	   
    }
    
    public String getTime(){
-	   //returns time formatted as "year-m-d_hr:mn:sc"
 	   String time = "";
 	   Calendar myCalendar = Calendar.getInstance();
 	   time = Integer.toString(myCalendar.get(Calendar.YEAR)) 			+ "-" +
@@ -128,18 +116,14 @@ public class VoiceRecorder extends Activity
 			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY)) 	+ ":" +
 			  Integer.toString(myCalendar.get(Calendar.MINUTE)) 		+ ":" +
 			  Integer.toString(myCalendar.get(Calendar.SECOND));
-	   
 	   return time;
    }
    
    public void viewSaved(View v){ 
 	   Intent intent = 
-           new Intent(VoiceRecorder.this, SavedRecordings.class);
+           new Intent(VoiceRecorder.this, Categories.class);
         startActivity(intent);
-	   
    }
-   
-
-} // end class VoiceRecorder
+} 
 
 

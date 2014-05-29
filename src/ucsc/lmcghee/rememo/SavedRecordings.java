@@ -44,6 +44,8 @@ public class SavedRecordings extends ListActivity
    private Handler handler; // updates the SeekBar thumb position
    private TextView nowPlayingTextView; // displays audio name
    private ToggleButton playPauseButton; // displays audio name
+   Bundle extra;
+   String location = null;
 
    // called when the activity is first created
    @Override
@@ -51,12 +53,16 @@ public class SavedRecordings extends ListActivity
    {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.saved_recordings);
+      extra = getIntent().getExtras();
+      if(extra != null){
+    	  location = extra.getString("KEY");
+      }
 
       // get ListView and set its listeners and adapter 
       ListView listView = getListView();
       savedRecordingsAdapter = new SavedRecordingsAdapter(this, 
          new ArrayList<String>(
-            Arrays.asList(getExternalFilesDir(null).list())));
+            Arrays.asList(getExternalFilesDir(location).list())));
       listView.setAdapter(savedRecordingsAdapter);
       
       handler = new Handler(); // updates SeekBar thumb position
@@ -69,6 +75,7 @@ public class SavedRecordings extends ListActivity
       playPauseButton.setOnCheckedChangeListener(playPauseButtonListener);
       nowPlayingTextView = 
          (TextView) findViewById(R.id.nowPlayingTextView);
+      
    } // end method onCreate
    
    // create the MediaPlayer object
