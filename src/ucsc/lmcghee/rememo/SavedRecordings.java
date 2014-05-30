@@ -17,6 +17,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
@@ -65,6 +66,8 @@ public class SavedRecordings extends ListActivity
    String location = null;
    ArrayAdapter<String> adapter;
    int i;
+   AudioManager audioManager;
+   Context context;
 
    // called when the activity is first created
    @Override
@@ -76,6 +79,9 @@ public class SavedRecordings extends ListActivity
       if(extra != null){
     	  location = extra.getString("KEY");
       }
+      
+      //init audioManager and context
+      audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 
       // get ListView and set its listeners and adapter 
       listView = getListView();
@@ -335,6 +341,7 @@ public class SavedRecordings extends ListActivity
             {
                mediaPlayer.start(); // start the MediaPlayer
                updater.run(); // start updating progress SeekBar
+               //AudioManager.speakerPhoneOn(true);
             }
             else
                mediaPlayer.pause(); // pause the MediaPlayer

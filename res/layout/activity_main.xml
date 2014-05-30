@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView2"
             android:layout_centerHorizontal="true"
-            android:text="Large Text"
+            android:text="stopped"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white" />
 
