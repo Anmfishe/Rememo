@@ -260,7 +260,7 @@ public class SavedRecordings extends ListActivity
       String name = nameTextView.getText().toString(); 
       
       // get path to file
-      String filePath = getExternalFilesDir(null).getAbsolutePath() + 
+      String filePath = getExternalFilesDir(location).getAbsolutePath() + 
          File.separator + name;
       
       // set nowPlayingTextView's text

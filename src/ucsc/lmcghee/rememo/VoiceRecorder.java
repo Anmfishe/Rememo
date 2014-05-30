@@ -39,9 +39,9 @@ public class VoiceRecorder extends Activity
 	  am.setMode(AudioManager.MODE_NORMAL);
 	  am.setSpeakerphoneOn(false);
 	  speakerON = false;
-	  createDir("Homework");
-	  createDir("New Memos");
-	  createDir("Groccerries");
+	  //createDir("Homework");
+	  //createDir("New Memos");
+	  //createDir("Groceries");
    } 
    
    // create the MediaRecorder
@@ -81,7 +81,7 @@ public class VoiceRecorder extends Activity
        try{
     	  // Create a file for the audio to be saved into
     	  File newFile = new File(
-            		 getExternalFilesDir("Default").getAbsolutePath() + 
+            		 getExternalFilesDir("New Memos").getAbsolutePath() + 
             		 File.separator + getTime() + ".3gp");
          
           recorder.setOutputFile(newFile.getAbsolutePath());
