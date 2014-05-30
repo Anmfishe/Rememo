@@ -201,7 +201,7 @@ public void startStop(View v){
        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-       recorder.setAudioEncodingBitRate(16);
+       recorder.setAudioEncodingBitRate(96000);
        recorder.setAudioSamplingRate(44100);       
        
     	   

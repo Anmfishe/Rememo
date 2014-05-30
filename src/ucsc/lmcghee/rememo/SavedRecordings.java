@@ -343,9 +343,7 @@ public class SavedRecordings extends ListActivity
                mediaPlayer.start(); // start the MediaPlayer
                updater.run(); // start updating progress SeekBar
                
-               audioManager.setMode(AudioManager.MODE_IN_CALL);    
-               audioManager.setMode(AudioManager.MODE_NORMAL);
-               audioManager.setSpeakerphoneOn(true);
+               
             }
             else{
                mediaPlayer.pause(); // pause the MediaPlayer
