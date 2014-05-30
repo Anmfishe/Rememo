@@ -41,6 +41,9 @@ public class VoiceRecorder extends Activity
    public File tmpFile;
    AudioManager am;
    boolean speakerON;
+   Button bt;
+   Button bt2;
+   View v2;
    
    @Override
    public void onCreate(Bundle savedInstanceState) 
@@ -79,8 +82,9 @@ public class VoiceRecorder extends Activity
    
    
 public void startStop(View v){
-       Button bt = (Button) findViewById(R.id.recordButton);
-       Button bt2 = (Button) findViewById(R.id.viewSaved);
+       bt = (Button) findViewById(R.id.recordButton);
+       bt2 = (Button) findViewById(R.id.viewSaved);
+       v2 = v;
 	   if(recording){
 		   stopRecording(v);
            bt.setText(R.string.rec);
@@ -88,27 +92,7 @@ public void startStop(View v){
            bt2.setEnabled(true);
 	   }
 	   else{
-		  startRecording(v);
-          bt.setText(R.string.stp);
-          bt.setTextColor(getResources().getColor(R.color.red));
-          bt2.setEnabled(false);
-	   }
-   }
-   
-   public void startRecording(View v){
-       Log.d("startRecording", "Start Button Pressed.");
-       if (recorder == null)
-          recorder = new MediaRecorder(); // create MediaRecorder 
-       recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-       recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-       recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-       recorder.setAudioEncodingBitRate(16);
-       recorder.setAudioSamplingRate(44100);       
-       
-    	   
-    	   
-    	   
-    	   ArrayList<String> values2 = new ArrayList<String>(
+		   ArrayList<String> values2 = new ArrayList<String>(
                    Arrays.asList(VoiceRecorder.this.getExternalFilesDir(null).list()));
      	  String create = "Create New Category";
      	  values2.add(create);
@@ -117,11 +101,11 @@ public void startStop(View v){
 
            AlertDialog.Builder builder = new AlertDialog.Builder(this);
            builder.setTitle("Make your selection");
-           /*builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+           builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	             public void onClick(DialogInterface dialog, int whichButton) {
 	                 // Do nothing.
 	             }
-	         });*/
+	         });
            builder.setItems(cs, new DialogInterface.OnClickListener() {
                public void onClick(DialogInterface dialog, int item) {
                     String temp = (String) cs[item];
@@ -147,6 +131,10 @@ public void startStop(View v){
              	             public void onClick(DialogInterface dialog, int whichButton) {
              	                 String value = nameEditText.getText().toString().trim();
              	                 if(value.length() != 0){
+             	                	startRecording(v2);
+             	                   bt.setText(R.string.stp);
+             	                   bt.setTextColor(getResources().getColor(R.color.red));
+             	                   bt2.setEnabled(false);
              	                	 try{
              	                	File newFile = new File(
              	                  		 getExternalFilesDir(value).getAbsolutePath() + 
@@ -173,7 +161,13 @@ public void startStop(View v){
             	             }
             	         }).show();
                     }else{
+                    	startRecording(v2);
+  	                   bt.setText(R.string.stp);
+  	                   bt.setTextColor(getResources().getColor(R.color.red));
+  	                   bt2.setEnabled(false);
+                    	
                     	try{
+                    	
                     	File newFile = new File(
                        		 getExternalFilesDir(temp).getAbsolutePath() + 
                        		 File.separator + getTime() + ".3gp");
@@ -193,6 +187,24 @@ public void startStop(View v){
                }
                }).show();
                
+		  
+	   }
+   }
+   
+   public void startRecording(View v){
+       Log.d("startRecording", "Start Button Pressed.");
+       if (recorder == null)
+          recorder = new MediaRecorder(); // create MediaRecorder 
+       recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+       recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+       recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+       recorder.setAudioEncodingBitRate(16);
+       recorder.setAudioSamplingRate(44100);       
+       
+    	   
+    	   
+    	   
+    	  
     	   
     	   
     	   
