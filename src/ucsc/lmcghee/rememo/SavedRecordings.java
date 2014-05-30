@@ -81,7 +81,8 @@ public class SavedRecordings extends ListActivity
       }
       
       //init audioManager and context
-      audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+      audioManager = (AudioManager)SavedRecordings.this.getSystemService(Context.AUDIO_SERVICE);
+      setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
       // get ListView and set its listeners and adapter 
       listView = getListView();
@@ -341,10 +342,19 @@ public class SavedRecordings extends ListActivity
             {
                mediaPlayer.start(); // start the MediaPlayer
                updater.run(); // start updating progress SeekBar
-               //AudioManager.speakerPhoneOn(true);
+               
+               audioManager.setMode(AudioManager.MODE_IN_CALL);    
+               audioManager.setMode(AudioManager.MODE_NORMAL);
+               audioManager.setSpeakerphoneOn(true);
             }
-            else
+            else{
                mediaPlayer.pause(); // pause the MediaPlayer
+               /*
+               audioManager.setMode(AudioManager.MODE_NORMAL);     
+               audioManager.setMode(AudioManager.MODE_IN_CALL);
+               audioManager.setSpeakerphoneOn(false);
+               */
+            }
          } // end method onCheckedChanged
       }; // end OnCheckedChangedListener
       @Override
