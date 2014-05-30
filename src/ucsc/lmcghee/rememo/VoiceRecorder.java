@@ -50,6 +50,9 @@ public class VoiceRecorder extends Activity
    {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
+      
+      //Set volume control
+      setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 	  //createDir("Homework");
 	  //createDir("New Memos");

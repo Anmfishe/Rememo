@@ -8,12 +8,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
@@ -61,6 +63,9 @@ public class Categories extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.categories_screen);
+        
+        //Set volume control
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
 
     	}
