@@ -10,15 +10,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
+import ucsc.lmcghee.rememo.R.color;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class VoiceRecorder extends Activity 
@@ -66,15 +71,17 @@ public class VoiceRecorder extends Activity
 		}
    
    
-   public void startStop(View v){
-       TextView tv = (TextView) findViewById(R.id.recordButton);
+public void startStop(View v){
+       Button bt = (Button) findViewById(R.id.recordButton);
 	   if(recording){
 		   stopRecording(v);
-           tv.setText(R.string.rec);
+           bt.setText(R.string.rec);
+           bt.setTextColor(getResources().getColor(R.color.white));
 	   }
 	   else{
-		   startRecording(v);
-          tv.setText(R.string.stp);
+		  startRecording(v);
+          bt.setText(R.string.stp);
+          bt.setTextColor(getResources().getColor(R.color.red));
 	   }
    }
    
@@ -124,7 +131,7 @@ public class VoiceRecorder extends Activity
 	   Calendar myCalendar = Calendar.getInstance();
 	   time = Integer.toString(1 + myCalendar.get(Calendar.MONTH)) 		+ "-" +
 			  Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) 	+ " " +
-			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY)) 	+ ":";
+			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY));
 
 	   if(myCalendar.get(Calendar.MINUTE) > 9)
 		   time = time + ":" + Integer.toString(myCalendar.get(Calendar.MINUTE));

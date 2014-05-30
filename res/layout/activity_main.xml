@@ -49,7 +49,7 @@
             android:layout_above="@+id/viewSaved"
             android:layout_centerHorizontal="true"
             android:onClick="startStop"
-            android:text="Record"
+            android:text="Record New"
             android:textColor="@color/white" />
 
     </RelativeLayout>

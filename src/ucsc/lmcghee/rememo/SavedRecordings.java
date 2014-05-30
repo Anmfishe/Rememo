@@ -139,8 +139,6 @@ public class SavedRecordings extends ListActivity
    private static class ViewHolder
    {
       TextView nameTextView; 
-      ImageView emailButton; 
-      ImageView deleteButton; 
    } // end class ViewHolder
    
    // ArrayAdapter displaying recording names and delete buttons
@@ -174,10 +172,6 @@ public class SavedRecordings extends ListActivity
             viewHolder = new ViewHolder();
             viewHolder.nameTextView = 
                (TextView) convertView.findViewById(R.id.nameTextView);
-            viewHolder.emailButton = 
-               (ImageView) convertView.findViewById(R.id.emailButton);
-            viewHolder.deleteButton = 
-               (ImageView) convertView.findViewById(R.id.deleteButton);
             convertView.setTag(viewHolder); // store as View's tag
          } // end if
          else // get the ViewHolder from the convertView's tag
@@ -187,11 +181,6 @@ public class SavedRecordings extends ListActivity
          String item = items.get(position);
          viewHolder.nameTextView.setText(item); 
 
-         // configure listeners for email and delete "buttons"
-         viewHolder.emailButton.setTag(item);
-         viewHolder.emailButton.setOnClickListener(emailButtonListener);
-         viewHolder.deleteButton.setTag(item);
-         viewHolder.deleteButton.setOnClickListener(deleteButtonListener);
 
          return convertView;
       } // end method getView
