@@ -110,12 +110,16 @@ public class VoiceRecorder extends Activity
    public String getTime(){
 	   String time = "";
 	   Calendar myCalendar = Calendar.getInstance();
-	   time = Integer.toString(myCalendar.get(Calendar.YEAR)) 			+ "-" +
-			  Integer.toString(1 + myCalendar.get(Calendar.MONTH)) 		+ "-" +
-			  Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) 	+ "_" +
+	   if(myCalendar.get(Calendar.MINUTE) > 9)
+	   time = Integer.toString(1 + myCalendar.get(Calendar.MONTH)) 		+ "-" +
+			  Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) 	+ " " +
 			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY)) 	+ ":" +
-			  Integer.toString(myCalendar.get(Calendar.MINUTE)) 		+ ":" +
-			  Integer.toString(myCalendar.get(Calendar.SECOND));
+			  Integer.toString(myCalendar.get(Calendar.MINUTE));
+	   else
+	   time = Integer.toString(1 + myCalendar.get(Calendar.MONTH)) 		+ "-" +
+			  Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) 	+ " " +
+			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY)) 	+ ":0" +
+			  Integer.toString(myCalendar.get(Calendar.MINUTE));
 	   return time;
    }
    
