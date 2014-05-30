@@ -422,6 +422,11 @@ public class SavedRecordings extends ListActivity
                   
                   AlertDialog.Builder builder = new AlertDialog.Builder(this);
                   builder.setTitle("Make your selection");
+                  builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+     	             public void onClick(DialogInterface dialog, int whichButton) {
+     	                 // Do nothing.
+     	             }
+     	         });
                   builder.setItems(cs, new DialogInterface.OnClickListener() {
                       public void onClick(DialogInterface dialog, int item) {
                            String temp = (String) cs[item];

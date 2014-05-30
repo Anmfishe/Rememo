@@ -8,12 +8,16 @@ package ucsc.lmcghee.rememo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import ucsc.lmcghee.rememo.R.color;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -21,9 +25,12 @@ import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class VoiceRecorder extends Activity 
@@ -73,15 +80,18 @@ public class VoiceRecorder extends Activity
    
 public void startStop(View v){
        Button bt = (Button) findViewById(R.id.recordButton);
+       Button bt2 = (Button) findViewById(R.id.viewSaved);
 	   if(recording){
 		   stopRecording(v);
            bt.setText(R.string.rec);
            bt.setTextColor(getResources().getColor(R.color.white));
+           bt2.setEnabled(true);
 	   }
 	   else{
 		  startRecording(v);
           bt.setText(R.string.stp);
           bt.setTextColor(getResources().getColor(R.color.red));
+          bt2.setEnabled(false);
 	   }
    }
    
@@ -94,26 +104,107 @@ public void startStop(View v){
        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
        recorder.setAudioEncodingBitRate(16);
        recorder.setAudioSamplingRate(44100);       
-       try{
+       
+    	   
+    	   
+    	   
+    	   ArrayList<String> values2 = new ArrayList<String>(
+                   Arrays.asList(VoiceRecorder.this.getExternalFilesDir(null).list()));
+     	  String create = "Create New Category";
+     	  values2.add(create);
+     	  final CharSequence[] cs = values2.toArray(new CharSequence[values2.size()]);
+           
+
+           AlertDialog.Builder builder = new AlertDialog.Builder(this);
+           builder.setTitle("Make your selection");
+           /*builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	             public void onClick(DialogInterface dialog, int whichButton) {
+	                 // Do nothing.
+	             }
+	         });*/
+           builder.setItems(cs, new DialogInterface.OnClickListener() {
+               public void onClick(DialogInterface dialog, int item) {
+                    String temp = (String) cs[item];
+                    
+                 	   
+                    if (temp.equals("Create New Category")){
+                 	   
+                 	   
+                 	   
+                 	   LayoutInflater inflater = (LayoutInflater) getSystemService(
+                  	            Context.LAYOUT_INFLATER_SERVICE);
+                    	  View v1 = inflater.inflate(R.layout.name_edittext, null);
+             	         final EditText nameEditText = 
+             	            new EditText(VoiceRecorder.this);
+             	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+             	         
+             	            
+             	         // create an input dialog to get recording name from user
+             	         new AlertDialog.Builder(VoiceRecorder.this)
+             	         .setTitle("Create New Category")
+             	         .setView(nameEditText)
+             	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+             	             public void onClick(DialogInterface dialog, int whichButton) {
+             	                 String value = nameEditText.getText().toString().trim();
+             	                 if(value.length() != 0){
+             	                	 try{
+             	                	File newFile = new File(
+             	                  		 getExternalFilesDir(value).getAbsolutePath() + 
+             	                  		 File.separator + getTime() + ".3gp");
+             	                	recorder.setOutputFile(newFile.getAbsolutePath());
+             	                   recorder.prepare(); // prepare to record   
+             	                   recorder.start(); // start recording
+             	                   recording = true; // we are currently recording
+             	                   TextView tv = (TextView) findViewById(R.id.statusText);
+             	                   tv.setText("recording");
+             	                	 }       catch (IllegalStateException e){
+             	                        Log.e(TAG, e.toString());
+             	                    } // end catch 
+             	                    catch (IOException e){
+             	                       Log.e(TAG, e.toString());
+             	                    }
+             	                 }else{
+            	                	 
+            	                 }
+            	             }
+            	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            	             public void onClick(DialogInterface dialog, int whichButton) {
+            	                 // Do nothing.
+            	             }
+            	         }).show();
+                    }else{
+                    	try{
+                    	File newFile = new File(
+                       		 getExternalFilesDir(temp).getAbsolutePath() + 
+                       		 File.separator + getTime() + ".3gp");
+                    	recorder.setOutputFile(newFile.getAbsolutePath());
+                        recorder.prepare(); // prepare to record   
+                        recorder.start(); // start recording
+                        recording = true; // we are currently recording
+                        TextView tv = (TextView) findViewById(R.id.statusText);
+                        tv.setText("recording");
+                    	}catch (IllegalStateException e){
+                            Log.e(TAG, e.toString());
+                         } // end catch 
+                         catch (IOException e){
+                            Log.e(TAG, e.toString());
+                         }
+                    }
+               }
+               }).show();
+               
+    	   
+    	   
+    	   
     	  // Create a file for the audio to be saved into
-    	  File newFile = new File(
+    	  /*File newFile = new File(
             		 getExternalFilesDir("New Memos").getAbsolutePath() + 
-            		 File.separator + getTime() + ".3gp");
+            		 File.separator + getTime() + ".3gp");*/
          
-          recorder.setOutputFile(newFile.getAbsolutePath());
-          recorder.prepare(); // prepare to record   
-          recorder.start(); // start recording
-          recording = true; // we are currently recording
-          TextView tv = (TextView) findViewById(R.id.statusText);
-          tv.setText("recording");
+          
        } // end try
-       catch (IllegalStateException e){
-          Log.e(TAG, e.toString());
-       } // end catch 
-       catch (IOException e){
-          Log.e(TAG, e.toString());
-       } // end catch               
-   } 
+ // end catch               
+    
    
    
    public void stopRecording(View v){
