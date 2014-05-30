@@ -6,7 +6,7 @@
    android:paddingRight="10dp">
 
    <ListView
-       android:id="@+id/listview"
+       android:id="@+id/listview2"
        android:layout_width="301dp"
        android:layout_height="wrap_content"
        android:layout_margin="5dp" />

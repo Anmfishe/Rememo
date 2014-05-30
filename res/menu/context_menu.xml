@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ucsc.lmcghee.rememo.SavedRecordings" >
+
+    <item android:id="@+id/delete"
+ 
+android:title="Delete" />
+ 
+<item android:id="@+id/edit"
+ 
+android:title="Edit" />
+<item android:id="@+id/move"
+ 
+android:title="Move" />
+
+</menu>

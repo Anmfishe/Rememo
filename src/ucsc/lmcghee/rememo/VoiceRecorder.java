@@ -63,7 +63,7 @@ public class VoiceRecorder extends Activity
       } 
    } 
    
-   public void createDir(String s){
+   private void createDir(String s){
 		File direct =  getExternalFilesDir(s);
 			//direct.mkdir();
 		}

@@ -6,19 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-
-
-
-
-
-
-
-
-
-
-
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -31,7 +18,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +30,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -63,16 +55,15 @@ public class Categories extends Activity {
         setContentView(R.layout.categories_screen);
         
         // Get ListView object from xml
-        listView = (ListView) findViewById(R.id.listview);
+        listView = (ListView) findViewById(R.id.listview2);
 
         
         // Defined Array values to show in ListView
-        values = getExternalFilesDir(null).list();
         values2 = new ArrayList<String>(
                 Arrays.asList(getExternalFilesDir(null).list()));
         create = "Create New Category";
         values2.add(create);
-        values = values2.toArray(new String[0]);
+
         
 
         
@@ -106,15 +97,53 @@ public class Categories extends Activity {
                
                // ListView Clicked item value
                String  itemValue    = (String) listView.getItemAtPosition(position);
-               Log.d("WHAT", itemValue);
+               
                if(itemValue.equals(create)){
-            	   values[position] = "New Category Here!";
-            	   values2.clear();
-            	   values2.addAll(Arrays.asList(values));
-            	   values2.add(create);
-            	   values = values2.toArray(new String[0]);
-            	   adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
-                   listView.setAdapter(adapter);
+            	   
+            	   
+            	   
+            	   LayoutInflater inflater = (LayoutInflater) getSystemService(
+            	            Context.LAYOUT_INFLATER_SERVICE);
+            	   
+            	         // inflate name_edittext.xml to create an EditText
+            	         View v1 = inflater.inflate(R.layout.name_edittext, null);
+            	         final EditText nameEditText = 
+            	            new EditText(Categories.this);
+            	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            	         
+            	            
+            	         // create an input dialog to get recording name from user
+            	         new AlertDialog.Builder(Categories.this)
+            	         .setTitle("New Category")
+            	         .setView(nameEditText)
+            	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            	             public void onClick(DialogInterface dialog, int whichButton) {
+            	                 String value = nameEditText.getText().toString();
+            	                 if(value.length() != 0){
+            	                	 createDir(value);
+            	                	 values2.clear();
+            	                	 values2 = new ArrayList<String>(
+            	                             Arrays.asList(Categories.this.getExternalFilesDir(null).list()));
+            	                	 values2.add(create);
+            	                     adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
+            	                     listView.setAdapter(adapter); 
+            	                 }
+            	             }
+            	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            	             public void onClick(DialogInterface dialog, int whichButton) {
+            	                 // Do nothing.
+            	             }
+            	         }).show();
+            	       // end method onClick
+            	    // end OnClickListener
+            	   
+            	   // deletes the temporary recording
+            	   
+
+            	   // launch Activity to view saved recordings
+            	   
+            	      
+             
                }else{
                Intent intent = new Intent(Categories.this, SavedRecordings.class);
                intent.putExtra("KEY", itemValue);
@@ -127,6 +156,11 @@ public class Categories extends Activity {
 			
 
          }); 
+        
+    	}
+    private void createDir(String s){
+		File direct =  getExternalFilesDir(s);
+			//direct.mkdir();
+		}
     }
 
-}

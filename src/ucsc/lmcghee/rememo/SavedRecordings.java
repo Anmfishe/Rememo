@@ -1,12 +1,18 @@
 package ucsc.lmcghee.rememo;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,13 +22,22 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -44,8 +59,12 @@ public class SavedRecordings extends ListActivity
    private Handler handler; // updates the SeekBar thumb position
    private TextView nowPlayingTextView; // displays audio name
    private ToggleButton playPauseButton; // displays audio name
+   ListView listView;
+   ListView lv;
    Bundle extra;
    String location = null;
+   ArrayAdapter<String> adapter;
+   int i;
 
    // called when the activity is first created
    @Override
@@ -59,11 +78,12 @@ public class SavedRecordings extends ListActivity
       }
 
       // get ListView and set its listeners and adapter 
-      ListView listView = getListView();
+      listView = getListView();
       savedRecordingsAdapter = new SavedRecordingsAdapter(this, 
          new ArrayList<String>(
             Arrays.asList(getExternalFilesDir(location).list())));
       listView.setAdapter(savedRecordingsAdapter);
+      registerForContextMenu(listView);
       
       handler = new Handler(); // updates SeekBar thumb position
 
@@ -75,6 +95,19 @@ public class SavedRecordings extends ListActivity
       playPauseButton.setOnCheckedChangeListener(playPauseButtonListener);
       nowPlayingTextView = 
          (TextView) findViewById(R.id.nowPlayingTextView);
+      
+      
+      /*ArrayList<String> values2 = new ArrayList<String>(
+              Arrays.asList(getExternalFilesDir(null).list()));
+      //values2.add();
+      adapter = new ArrayAdapter<String>(SavedRecordings.this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
+      Log.d("WHAT", adapter.toString());
+      lv = (ListView) findViewById(R.id.listview2);
+      Log.d("WHAT", lv.toString());
+      lv.setAdapter(adapter);
+      Log.d("WHAT", "yo4");*/
+      
+      
       
    } // end method onCreate
    
@@ -318,20 +351,91 @@ public class SavedRecordings extends ListActivity
                mediaPlayer.pause(); // pause the MediaPlayer
          } // end method onCheckedChanged
       }; // end OnCheckedChangedListener
+      @Override
+      public void onCreateContextMenu(ContextMenu menu, View v,
+                                      ContextMenuInfo menuInfo) {
+          super.onCreateContextMenu(menu, v, menuInfo);
+          MenuInflater inflater = getMenuInflater();
+          inflater.inflate(R.menu.context_menu, menu);
+      }
+      @Override
+      public boolean onContextItemSelected(MenuItem item) {
+          AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+          switch (item.getItemId()) {
+              case R.id.edit:
+                  
+                  return true;
+              case R.id.delete:
+                  String temp = listView.getItemAtPosition((int) info.id).toString();
+                  savedRecordingsAdapter.remove(temp);
+                  savedRecordingsAdapter.notifyDataSetChanged();
+                  File f = new File(SavedRecordings.this.getExternalFilesDir(location), temp);
+                  boolean h = f.delete();
+                  if (h){ Log.d("WHAT", "deleted");}
+                  return true;
+              case R.id.move:
+            	  i = (int) info.id;
+            	  
+            	  ArrayList<String> values2 = new ArrayList<String>(
+                          Arrays.asList(SavedRecordings.this.getExternalFilesDir(null).list()));
+            	  final CharSequence[] cs = values2.toArray(new CharSequence[values2.size()]);
+                  String create = "Create New Category";
+                  values2.add(create);
+
+                  
+                  
+                  
+                  AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                  builder.setTitle("Make your selection");
+                  builder.setItems(cs, new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int item) {
+                           String temp = (String) cs[item];
+                           String temp2 = listView.getItemAtPosition(i).toString();
+                           String source = SavedRecordings.this.getExternalFilesDir(location)+"/"+ temp2;
+                           String target = SavedRecordings.this.getExternalFilesDir(temp) +"/"+ temp2;
+                           try {
+							InputStream in = new FileInputStream(source);
+							OutputStream out = new FileOutputStream(target);
+						
+                           byte[] buf = new byte[1024];
+                           int len;
+                            
+                           while ((len = in.read(buf)) > 0) {
+                               out.write(buf, 0, len);
+                           }
+                            
+                           in.close();
+                           out.close();
+                           
+                           }catch (NullPointerException e) {
+                               e.printStackTrace();
+                           } catch (Exception e) {
+                               e.printStackTrace();
+                           }
+                           savedRecordingsAdapter.remove(temp2);
+                           savedRecordingsAdapter.notifyDataSetChanged();
+                           File deleteFile = new File(SavedRecordings.this.getExternalFilesDir(location), temp2);
+                           deleteFile.delete();
+                           }
+                  });
+                  AlertDialog alert = builder.create();
+                  alert.show();
+                  
+          	         
+          	         
+          	         
+          	         
+          	         
+            	  
+              	  return true;
+              default:
+                  return super.onContextItemSelected(item);
+          }
+      }
+
+	private Dialog getActivity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 } // end class SavedRecordings
 
-
-/**************************************************************************
- * (C) Copyright 1992-2012 by Deitel & Associates, Inc. and               *
- * Pearson Education, Inc. All Rights Reserved.                           *
- *                                                                        *
- * DISCLAIMER: The authors and publisher of this book have used their     *
- * best efforts in preparing the book. These efforts include the          *
- * development, research, and testing of the theories and programs        *
- * to determine their effectiveness. The authors and publisher make       *
- * no warranty of any kind, expressed or implied, with regard to these    *
- * programs or to the documentation contained in these books. The authors *
- * and publisher shall not be liable in any event for incidental or       *
- * consequential damages in connection with, or arising out of, the       *
- * furnishing, performance, or use of these programs.                     *
- **************************************************************************/
