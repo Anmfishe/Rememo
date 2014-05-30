@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ucsc.lmcghee.rememo.Categories" >
+
+    <item android:id="@+id/deleteC"
+ 
+android:title="Delete Category" />
+ 
+<item android:id="@+id/editC"
+ 
+android:title="Edit Category" />
+
+
+</menu>

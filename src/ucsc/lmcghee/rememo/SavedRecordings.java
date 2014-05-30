@@ -375,9 +375,9 @@ public class SavedRecordings extends ListActivity
      	                	String from = listView.getItemAtPosition(i).toString();
      	                	String to = value;
      	                	File ffrom = new File(SavedRecordings.this.getExternalFilesDir(location), from);
-     	                	Log.d("WHAT",ffrom.toString());
+     	                	
      	                	File fto = new File(SavedRecordings.this.getExternalFilesDir(location), value + ".3gp");
-     	                	Log.d("WHAT",fto.toString());
+     	                	
      	                	ffrom.renameTo(fto);
      	                	//fto.delete();
      	                	savedRecordingsAdapter = new SavedRecordingsAdapter(SavedRecordings.this, 
@@ -426,6 +426,70 @@ public class SavedRecordings extends ListActivity
                       public void onClick(DialogInterface dialog, int item) {
                            String temp = (String) cs[item];
                            if(temp.equals(location)){
+                        	   
+                           }else if (temp.equals("Create New Category")){
+                        	   
+                        	   
+                        	   
+                        	   LayoutInflater inflater = (LayoutInflater) getSystemService(
+                         	            Context.LAYOUT_INFLATER_SERVICE);
+                           	  View v1 = inflater.inflate(R.layout.name_edittext, null);
+                    	         final EditText nameEditText = 
+                    	            new EditText(SavedRecordings.this);
+                    	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+                    	         
+                    	            
+                    	         // create an input dialog to get recording name from user
+                    	         new AlertDialog.Builder(SavedRecordings.this)
+                    	         .setTitle("Create New Category")
+                    	         .setView(nameEditText)
+                    	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    	             public void onClick(DialogInterface dialog, int whichButton) {
+                    	                 String value = nameEditText.getText().toString().trim();
+                    	                 if(value.length() != 0){
+                    	                	 
+                    	                	 String temperino = listView.getItemAtPosition(i).toString();
+                                             String source2 = SavedRecordings.this.getExternalFilesDir(location)+"/"+ temperino;
+                                             String target2 = SavedRecordings.this.getExternalFilesDir(value) +"/"+ temperino;
+                                             try {
+                     							InputStream in2 = new FileInputStream(source2);
+                     							OutputStream out2 = new FileOutputStream(target2);
+                     						
+                                                byte[] buf = new byte[1024];
+                                                int len;
+                                                 
+                                                while ((len = in2.read(buf)) > 0) {
+                                                    out2.write(buf, 0, len);
+                                                }
+                                                 
+                                                in2.close();
+                                                out2.close();
+                                                
+                                                }catch (NullPointerException e) {
+                                                    e.printStackTrace();
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                savedRecordingsAdapter.remove(temperino);
+                                                savedRecordingsAdapter.notifyDataSetChanged();
+                                                File deleteFile = new File(SavedRecordings.this.getExternalFilesDir(location), temperino);
+                                                deleteFile.delete();
+                    	                	 
+                    	                	 
+                    	                	 
+                    	                	 
+                    	                 }else{
+                    	                	 
+                    	                 }
+                    	             }
+                    	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    	             public void onClick(DialogInterface dialog, int whichButton) {
+                    	                 // Do nothing.
+                    	             }
+                    	         }).show();
+                        	   
+                        	   
+                        	   
                         	   
                         	   
                            }else{
