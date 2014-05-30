@@ -8,75 +8,49 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:background="@color/black" >
 
         <Button
-            android:id="@+id/viewSavedRecordingsButton"
+            android:id="@+id/viewSaved"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/deleteButton"
-            android:layout_alignBottom="@+id/deleteButton"
-            android:layout_marginLeft="29dp"
-            android:layout_toRightOf="@+id/recordButton"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:onClick="viewSaved"
-            android:text="View Saved" />
-
-        <Button
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/recordButton"
-            android:layout_marginTop="54dp"
-            android:text="delete" />
-
-        <Button
-            android:id="@+id/recordButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/saveButton"
-            android:layout_marginTop="39dp"
-            android:onClick="startRecording"
-            android:text="record" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/statusText"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="58dp"
-            android:text="Status:"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="View Saved"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/viewSavedRecordingsButton"
             android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/saveButton"
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/deleteButton"
-            android:layout_marginTop="15dp"
-            android:text="Save" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="64dp"
+            android:text="Status:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/Button01"
+            android:id="@+id/recordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/statusText"
+            android:layout_above="@+id/viewSaved"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="27dp"
-            android:onClick="stopRecording"
-            android:text="Stop" />
+            android:onClick="startStop"
+            android:text="Record"
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 

@@ -19,5 +19,13 @@
     <string name="message_name">You must specify a recording name</string>
     <string name="emailPickerTitle">email something I think</string>
     <string name="now_playing_prefix">now playing prefix</string>
+    <string name="rec">Record New</string>
+    <string name="stp">Stop</string>
+    
+    <color name="black">#000000</color>
+    <color name="holo_blue_light">#33b5e5</color>
+    <color name="holo_blue_dark">#0099cc</color>
+    <color name="holo_blue_bright">#00ddff</color>
+    <color name="white">#ffffff</color>
 
 </resources>

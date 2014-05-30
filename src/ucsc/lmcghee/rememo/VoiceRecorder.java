@@ -66,6 +66,18 @@ public class VoiceRecorder extends Activity
 		}
    
    
+   public void startStop(View v){
+       TextView tv = (TextView) findViewById(R.id.recordButton);
+	   if(recording){
+		   stopRecording(v);
+           tv.setText(R.string.rec);
+	   }
+	   else{
+		   startRecording(v);
+          tv.setText(R.string.stp);
+	   }
+   }
+   
    public void startRecording(View v){
        Log.d("startRecording", "Start Button Pressed.");
        if (recorder == null)
@@ -96,7 +108,9 @@ public class VoiceRecorder extends Activity
        } // end catch               
    } 
    
+   
    public void stopRecording(View v){
+	   if(!recording) return; //breaks here if not currently recording
        recorder.stop(); // stop recording
        recorder.reset(); // reset the MediaRecorder
        recording = false; // we are no longer recording
@@ -105,18 +119,23 @@ public class VoiceRecorder extends Activity
    }
    
    public String getTime(){
+	   // Returns time in form of a string formatted as m-d hr:mn 
 	   String time = "";
 	   Calendar myCalendar = Calendar.getInstance();
+	   time = Integer.toString(1 + myCalendar.get(Calendar.MONTH)) 		+ "-" +
+			  Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) 	+ " " +
+			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY)) 	+ ":";
+
 	   if(myCalendar.get(Calendar.MINUTE) > 9)
-	   time = Integer.toString(1 + myCalendar.get(Calendar.MONTH)) 		+ "-" +
-			  Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) 	+ " " +
-			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY)) 	+ ":" +
-			  Integer.toString(myCalendar.get(Calendar.MINUTE));
+		   time = time + ":" + Integer.toString(myCalendar.get(Calendar.MINUTE));
 	   else
-	   time = Integer.toString(1 + myCalendar.get(Calendar.MONTH)) 		+ "-" +
-			  Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) 	+ " " +
-			  Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY)) 	+ ":0" +
-			  Integer.toString(myCalendar.get(Calendar.MINUTE));
+		   time = time + ":0" + Integer.toString(myCalendar.get(Calendar.MINUTE));
+	   
+	   if(myCalendar.get(Calendar.SECOND) > 9)
+		   time = time + ":" + Integer.toString(myCalendar.get(Calendar.SECOND));
+	   else
+		   time = time + ":0" + Integer.toString(myCalendar.get(Calendar.SECOND));
+			  
 	   return time;
    }
    
