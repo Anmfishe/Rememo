@@ -118,7 +118,7 @@ public class Categories extends Activity {
             	         .setView(nameEditText)
             	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             	             public void onClick(DialogInterface dialog, int whichButton) {
-            	                 String value = nameEditText.getText().toString();
+            	                 String value = nameEditText.getText().toString().trim();
             	                 if(value.length() != 0){
             	                	 createDir(value);
             	                	 values2.clear();
@@ -127,6 +127,8 @@ public class Categories extends Activity {
             	                	 values2.add(create);
             	                     adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
             	                     listView.setAdapter(adapter); 
+            	                 }else{
+            	                	 Log.d("WHAT","Worked");
             	                 }
             	             }
             	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

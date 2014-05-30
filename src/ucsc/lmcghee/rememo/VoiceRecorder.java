@@ -35,10 +35,7 @@ public class VoiceRecorder extends Activity
    {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
-      am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-	  am.setMode(AudioManager.MODE_NORMAL);
-	  am.setSpeakerphoneOn(false);
-	  speakerON = false;
+
 	  //createDir("Homework");
 	  //createDir("New Memos");
 	  //createDir("Groceries");

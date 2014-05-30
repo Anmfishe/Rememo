@@ -363,6 +363,50 @@ public class SavedRecordings extends ListActivity
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
           switch (item.getItemId()) {
               case R.id.edit:
+            	  i = (int) info.id;
+            	  
+            	  
+            	  
+            	  LayoutInflater inflater = (LayoutInflater) getSystemService(
+          	            Context.LAYOUT_INFLATER_SERVICE);
+            	  View v1 = inflater.inflate(R.layout.name_edittext, null);
+     	         final EditText nameEditText = 
+     	            new EditText(SavedRecordings.this);
+     	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+     	         
+     	            
+     	         // create an input dialog to get recording name from user
+     	         new AlertDialog.Builder(SavedRecordings.this)
+     	         .setTitle("Rename File")
+     	         .setView(nameEditText)
+     	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+     	             public void onClick(DialogInterface dialog, int whichButton) {
+     	                 String value = nameEditText.getText().toString().trim();
+     	                 if(value.length() != 0){
+     	                	String from = listView.getItemAtPosition(i).toString();
+     	                	String to = value;
+     	                	File ffrom = new File(SavedRecordings.this.getExternalFilesDir(location), from);
+     	                	Log.d("WHAT",ffrom.toString());
+     	                	File fto = new File(SavedRecordings.this.getExternalFilesDir(location), value + ".3gp");
+     	                	Log.d("WHAT",fto.toString());
+     	                	ffrom.renameTo(fto);
+     	                	//fto.delete();
+     	                	savedRecordingsAdapter = new SavedRecordingsAdapter(SavedRecordings.this, 
+     	                	         new ArrayList<String>(
+     	                	            Arrays.asList(SavedRecordings.this.getExternalFilesDir(location).list())));
+     	                	      listView.setAdapter(savedRecordingsAdapter);
+     	                 }else{
+     	                	 
+     	                 }
+     	             }
+     	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+     	             public void onClick(DialogInterface dialog, int whichButton) {
+     	                 // Do nothing.
+     	             }
+     	         }).show();
+            	  
+            	  
+            	  
                   
                   return true;
               case R.id.delete:
@@ -378,9 +422,11 @@ public class SavedRecordings extends ListActivity
             	  
             	  ArrayList<String> values2 = new ArrayList<String>(
                           Arrays.asList(SavedRecordings.this.getExternalFilesDir(null).list()));
+            	  String create = "Create New Category";
+            	  values2.add(create);
             	  final CharSequence[] cs = values2.toArray(new CharSequence[values2.size()]);
-                  String create = "Create New Category";
-                  values2.add(create);
+                  
+                  
 
                   
                   
@@ -390,6 +436,10 @@ public class SavedRecordings extends ListActivity
                   builder.setItems(cs, new DialogInterface.OnClickListener() {
                       public void onClick(DialogInterface dialog, int item) {
                            String temp = (String) cs[item];
+                           if(temp.equals(location)){
+                        	   
+                        	   
+                           }else{
                            String temp2 = listView.getItemAtPosition(i).toString();
                            String source = SavedRecordings.this.getExternalFilesDir(location)+"/"+ temp2;
                            String target = SavedRecordings.this.getExternalFilesDir(temp) +"/"+ temp2;
@@ -417,6 +467,7 @@ public class SavedRecordings extends ListActivity
                            File deleteFile = new File(SavedRecordings.this.getExternalFilesDir(location), temp2);
                            deleteFile.delete();
                            }
+                      }
                   });
                   AlertDialog alert = builder.create();
                   alert.show();
