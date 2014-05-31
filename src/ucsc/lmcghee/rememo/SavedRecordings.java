@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
@@ -66,7 +67,7 @@ public class SavedRecordings extends ListActivity
    String location = null;
    ArrayAdapter<String> adapter;
    int i;
-   AudioManager audioManager;
+   //AudioManager audioManager;
    Context context;
 
    // called when the activity is first created
@@ -81,8 +82,8 @@ public class SavedRecordings extends ListActivity
       }
       
       //init audioManager and context
-      audioManager = (AudioManager)SavedRecordings.this.getSystemService(Context.AUDIO_SERVICE);
-      setVolumeControlStream(AudioManager.STREAM_MUSIC);
+      //audioManager = (AudioManager)SavedRecordings.this.getSystemService(Context.AUDIO_SERVICE);
+      //setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
       // get ListView and set its listeners and adapter 
       listView = getListView();
@@ -377,6 +378,7 @@ public class SavedRecordings extends ListActivity
      	         final EditText nameEditText = 
      	            new EditText(SavedRecordings.this);
      	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+     	        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
      	         
      	            
      	         // create an input dialog to get recording name from user
@@ -385,6 +387,7 @@ public class SavedRecordings extends ListActivity
      	         .setView(nameEditText)
      	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
      	             public void onClick(DialogInterface dialog, int whichButton) {
+     	            	((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
      	                 String value = nameEditText.getText().toString().trim();
      	                 if(value.length() != 0){
      	                	String from = listView.getItemAtPosition(i).toString();
@@ -405,6 +408,7 @@ public class SavedRecordings extends ListActivity
      	             }
      	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
      	             public void onClick(DialogInterface dialog, int whichButton) {
+     	            	((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
      	                 // Do nothing.
      	             }
      	         }).show();
@@ -457,6 +461,7 @@ public class SavedRecordings extends ListActivity
                     	         final EditText nameEditText = 
                     	            new EditText(SavedRecordings.this);
                     	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+                    	         ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     	         
                     	            
                     	         // create an input dialog to get recording name from user
@@ -465,6 +470,7 @@ public class SavedRecordings extends ListActivity
                     	         .setView(nameEditText)
                     	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     	             public void onClick(DialogInterface dialog, int whichButton) {
+                    	            	 ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
                     	                 String value = nameEditText.getText().toString().trim();
                     	                 if(value.length() != 0){
                     	                	 
@@ -504,6 +510,7 @@ public class SavedRecordings extends ListActivity
                     	             }
                     	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     	             public void onClick(DialogInterface dialog, int whichButton) {
+                    	            	 ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
                     	                 // Do nothing.
                     	             }
                     	         }).show();

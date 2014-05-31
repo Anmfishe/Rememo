@@ -9,6 +9,11 @@ import java.util.List;
 
 
 
+
+
+
+
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -34,10 +39,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -54,7 +61,7 @@ public class Categories extends Activity {
     ListView listView ;
     ArrayAdapter<String> adapter;
     String create;
-    String[] values;
+    ArrayList<String> values;
     ArrayList<String> values2;
     int i;
     
@@ -74,11 +81,25 @@ public class Categories extends Activity {
     	super.onResume();
         // Get ListView object from xml
         listView = (ListView) findViewById(R.id.listview2);
+        values = new ArrayList<String>();
         values2 = new ArrayList<String>(
                 Arrays.asList(getExternalFilesDir(null).list()));
         create = "Create New Category";
+        for(String str : values2){
+        	int i = 0;
+        	File f = getExternalFilesDir(str);
+        	if(f.isDirectory()){
+        		String[] children = f.list();
+                for (i = 0; i < children.length; i++){}
+                values.add(str + " (" + Integer.toString(i)+")");
+        	}
+        }
+        Log.d("WHAT",values.toString());
         values2.add(create);
-        adapter = new ArrayAdapter<String>(this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
+        values.add(create);
+        //adapter = new MyRecordingsAdapter(this, values2, values);
+        adapter = new ArrayAdapter<String>(this, R.layout.saved_recordings_row, R.id.nameTextView, values);
+
         listView.setAdapter(adapter); 
         listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -86,7 +107,9 @@ public class Categories extends Activity {
               public void onItemClick(AdapterView<?> parent, View view,
                  int position, long id) {
                int itemPosition     = position;
-               String  itemValue    = (String) listView.getItemAtPosition(position);
+               String  itemValue    = values2.get(position);
+            		   //(String) listView.getItemAtPosition(position);
+               
                
                if(itemValue.equals(create)){
             	   LayoutInflater inflater = (LayoutInflater) getSystemService(
@@ -97,8 +120,10 @@ public class Categories extends Activity {
             	         final EditText nameEditText = 
             	            new EditText(Categories.this);
             	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
             	         
-            	            
+            	         
+            	         ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
             	         // create an input dialog to get recording name from user
             	         new AlertDialog.Builder(Categories.this)
             	         .setTitle("New Category")
@@ -107,19 +132,35 @@ public class Categories extends Activity {
             	             public void onClick(DialogInterface dialog, int whichButton) {
             	                 String value = nameEditText.getText().toString().trim();
             	                 if(value.length() != 0){
+            	                	 ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
             	                	 createDir(value);
             	                	 values2.clear();
+            	                	 values.clear();
             	                	 values2 = new ArrayList<String>(
             	                             Arrays.asList(Categories.this.getExternalFilesDir(null).list()));
-            	                	 values2.add(create);
-            	                     adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
+            	                	 for(String str : values2){
+            	                     	int i = 0;
+            	                     	File f = getExternalFilesDir(str);
+            	                     	if(f.isDirectory()){
+            	                     		String[] children = f.list();
+            	                             for (i = 0; i < children.length; i++){}
+            	                             values.add(str + " (" + Integer.toString(i)+")");
+            	                     	}
+            	                     }
+            	                     Log.d("WHAT",values.toString());
+            	                     values2.add(create);
+            	                     values.add(create);
+            	                	 
+            	                     adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values);
             	                     listView.setAdapter(adapter); 
             	                 }else{
+            	                	 ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
             	                	
             	                 }
             	             }
             	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             	             public void onClick(DialogInterface dialog, int whichButton) {
+            	            	 ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
             	                 // Do nothing.
             	             }
             	         }).show();
@@ -137,10 +178,10 @@ public class Categories extends Activity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
-super.onCreateContextMenu(menu, v, menuInfo);
-MenuInflater inflater = getMenuInflater();
-inflater.inflate(R.menu.categories_menu, menu);
-}
+    		super.onCreateContextMenu(menu, v, menuInfo);
+    		MenuInflater inflater = getMenuInflater();
+    		inflater.inflate(R.menu.categories_menu, menu);
+    }
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -162,6 +203,7 @@ inflater.inflate(R.menu.categories_menu, menu);
    	         final EditText nameEditText = 
    	            new EditText(Categories.this);
    	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+   	      ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
    	         
    	            
    	         // create an input dialog to get recording name from user
@@ -170,9 +212,10 @@ inflater.inflate(R.menu.categories_menu, menu);
    	         .setView(nameEditText)
    	         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
    	             public void onClick(DialogInterface dialog, int whichButton) {
+   	            	((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
    	                 String value = nameEditText.getText().toString().trim();
    	                 if(value.length() != 0){
-   	                	String from = listView.getItemAtPosition(i).toString();
+   	                	String from = values2.get(i);
    	                	String to = value;
    	                	File ffrom = new File(Categories.this.getExternalFilesDir(null), from);
    	                	
@@ -180,19 +223,31 @@ inflater.inflate(R.menu.categories_menu, menu);
    	                	
    	                	ffrom.renameTo(fto);
    	                	//fto.delete();
+   	                	values.clear();
    	                	values2 = new ArrayList<String>(
    	                         Arrays.asList(getExternalFilesDir(null).list()));
-   	                 create = "Create New Category";
+   	                	create = "Create New Category";
+   	                	for(String str : values2){
+   	                			int i = 0;
+   	                			File f = getExternalFilesDir(str);
+   	                			if(f.isDirectory()){
+   	                				String[] children = f.list();
+   	                				for (i = 0; i < children.length; i++){}
+   	                				values.add(str + " (" + Integer.toString(i)+")");
+   	                			}
+   	                	}
    	                 values2.add(create);
-   	                 adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values2);
+   	                 values.add(create);
+   	                 adapter = new ArrayAdapter<String>(Categories.this, R.layout.saved_recordings_row, R.id.nameTextView, values);
    	                 listView.setAdapter(adapter); 
    	                 }else{
-   	                	 
+   	                	((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
    	                 }
    	             }
    	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
    	             public void onClick(DialogInterface dialog, int whichButton) {
    	                 // Do nothing.
+   	            	((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
    	             }
    	         }).show();
             	}
@@ -203,10 +258,12 @@ inflater.inflate(R.menu.categories_menu, menu);
             	
             	return true;
             case R.id.deleteC:
-            	i = (int) info.id;
-            	String temp = listView.getItemAtPosition((int) info.id).toString();
+            	i= (int) info.id;
+            	
+            	String temp = values2.get((int) info.id);
+            	String temp2 = listView.getItemAtPosition(i).toString();
             	if(!temp.equals("Create New Category")){
-                adapter.remove(temp);
+                adapter.remove(temp2);
                 adapter.notifyDataSetChanged();
                 File f = new File(Categories.this.getExternalFilesDir(null), temp);
                 if (f.isDirectory()) {
@@ -227,6 +284,8 @@ inflater.inflate(R.menu.categories_menu, menu);
     private void createDir(String s){
 		File direct =  getExternalFilesDir(s);
 			//direct.mkdir();
-		}
+	}
+
+    
     }
 
