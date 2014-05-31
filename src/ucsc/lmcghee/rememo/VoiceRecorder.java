@@ -25,10 +25,12 @@ import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,11 +41,14 @@ public class VoiceRecorder extends Activity
    private MediaRecorder recorder; // used to record audio
    private boolean recording; // are we currently recording
    public File tmpFile;
+   File newFile;
    AudioManager am;
    boolean speakerON;
    Button bt;
    Button bt2;
    View v2;
+   AudioManager audioManager;
+   Boolean helper;
    
    @Override
    public void onCreate(Bundle savedInstanceState) 
@@ -90,11 +95,9 @@ public void startStop(View v){
        v2 = v;
 	   if(recording){
 		   stopRecording(v);
-           bt.setText(R.string.rec);
-           bt.setTextColor(getResources().getColor(R.color.white));
-           bt2.setEnabled(true);
-	   }
-	   else{
+		   
+		   
+		   
 		   ArrayList<String> values2 = new ArrayList<String>(
                    Arrays.asList(VoiceRecorder.this.getExternalFilesDir(null).list()));
      	  String create = "Create New Category";
@@ -107,6 +110,13 @@ public void startStop(View v){
            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	             public void onClick(DialogInterface dialog, int whichButton) {
 	                 // Do nothing.
+	            	 
+	            	 newFile.delete();
+	            	 TextView tv = (TextView) findViewById(R.id.statusText);
+                      tv.setText("Stopped");
+	            	 bt.setText(R.string.rec);
+                      bt.setTextColor(getResources().getColor(R.color.white));
+                      bt2.setEnabled(true);
 	             }
 	         });
            builder.setItems(cs, new DialogInterface.OnClickListener() {
@@ -115,6 +125,7 @@ public void startStop(View v){
                     
                  	   
                     if (temp.equals("Create New Category")){
+                    	
                  	   
                  	   
                  	   
@@ -125,9 +136,10 @@ public void startStop(View v){
              	            new EditText(VoiceRecorder.this);
              	         nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
              	         
+             	        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+             	         
              	            
              	         // create an input dialog to get recording name from user
-             	         
              	         new AlertDialog.Builder(VoiceRecorder.this)
              	         .setTitle("Create New Category")
              	         .setView(nameEditText)
@@ -135,64 +147,95 @@ public void startStop(View v){
              	             public void onClick(DialogInterface dialog, int whichButton) {
              	                 String value = nameEditText.getText().toString().trim();
              	                 if(value.length() != 0){
-             	                	startRecording(v2);
-             	                   bt.setText(R.string.stp);
-             	                   bt.setTextColor(getResources().getColor(R.color.red));
-             	                   bt2.setEnabled(false);
-             	                	 try{
-             	                	File newFile = new File(
-             	                  		 getExternalFilesDir(value).getAbsolutePath() + 
-             	                  		 File.separator + getTime() + ".3gp");
-             	                	recorder.setOutputFile(newFile.getAbsolutePath());
-             	                   recorder.prepare(); // prepare to record   
-             	                   recorder.start(); // start recording
-             	                   recording = true; // we are currently recording
-             	                   TextView tv = (TextView) findViewById(R.id.statusText);
-             	                   tv.setText("recording");
-             	                	 }       catch (IllegalStateException e){
-             	                        Log.e(TAG, e.toString());
-             	                    } // end catch 
-             	                    catch (IOException e){
-             	                       Log.e(TAG, e.toString());
-             	                    }
+             	                	((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
+             	                	tmpFile = new File(
+             	                       		 getExternalFilesDir(value).getAbsolutePath() + 
+             	                       		 File.separator + getTime() + ".3gp");
+             	                    	 newFile.renameTo(tmpFile);
+             	                    	TextView tv = (TextView) findViewById(R.id.statusText);
+             	                        tv.setText("Stopped");
+             	                        bt.setText(R.string.rec);
+             	                        bt.setTextColor(getResources().getColor(R.color.white));
+             	                        bt2.setEnabled(true);
+             	                	
              	                 }else{
+             	                	((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
+             	                	newFile.delete();
+             	                	TextView tv = (TextView) findViewById(R.id.statusText);
+         	                        tv.setText("Stopped");
+             	                	bt.setText(R.string.rec);
+         	                        bt.setTextColor(getResources().getColor(R.color.white));
+         	                        bt2.setEnabled(true);
             	                	 
             	                 }
             	             }
             	         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             	             public void onClick(DialogInterface dialog, int whichButton) {
             	                 // Do nothing.
+            	            	 ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(nameEditText.getWindowToken(), 0);
+            	            	 newFile.delete();
+            	            	 TextView tv = (TextView) findViewById(R.id.statusText);
+      	                        tv.setText("Stopped");
+            	            	 bt.setText(R.string.rec);
+      	                        bt.setTextColor(getResources().getColor(R.color.white));
+      	                        bt2.setEnabled(true);
             	             }
             	         }).show();
                     }else{
-                    	startRecording(v2);
-  	                   bt.setText(R.string.stp);
-  	                   bt.setTextColor(getResources().getColor(R.color.red));
-  	                   bt2.setEnabled(false);
                     	
                     	try{
                     	
-                    	File newFile = new File(
+                    	 tmpFile = new File(
                        		 getExternalFilesDir(temp).getAbsolutePath() + 
                        		 File.separator + getTime() + ".3gp");
-                    	recorder.setOutputFile(newFile.getAbsolutePath());
-                        recorder.prepare(); // prepare to record   
-                        recorder.start(); // start recording
-                        recording = true; // we are currently recording
-                        TextView tv = (TextView) findViewById(R.id.statusText);
-                        tv.setText("recording");
+                    	 newFile.renameTo(tmpFile);
+                    	 TextView tv = (TextView) findViewById(R.id.statusText);
+                         tv.setText("Stopped");
+                         bt.setText(R.string.rec);
+                         bt.setTextColor(getResources().getColor(R.color.white));
+                         bt2.setEnabled(true);
                     	}catch (IllegalStateException e){
                             Log.e(TAG, e.toString());
                          } // end catch 
-                         catch (IOException e){
-                            Log.e(TAG, e.toString());
-                         }
+                        
                     }
                }
                }).show();
                
-		  
+           TextView tv = (TextView) findViewById(R.id.statusText);
+            tv.setText("Stopped");
+            bt.setText(R.string.rec);
+            bt.setTextColor(getResources().getColor(R.color.white));
+            bt2.setEnabled(true);
+	   
+           
 	   }
+
+	   
+	   else{
+		   startRecording(v2);
+            bt.setText(R.string.stp);
+            bt.setTextColor(getResources().getColor(R.color.red));
+            bt2.setEnabled(false);
+         	 try{
+         	 newFile = new File(
+           		 getExternalFilesDir("New Memos").getAbsolutePath() + 
+           		 File.separator + getTime() + ".3gp");
+            recorder.setOutputFile(newFile.getAbsolutePath());
+            recorder.prepare(); // prepare to record   
+            recorder.start(); // start recording
+            recording = true; // we are currently recording
+            TextView tv = (TextView) findViewById(R.id.statusText);
+            tv.setText("recording");
+          
+         	 }       catch (IllegalStateException e){
+                 Log.e(TAG, e.toString());
+             } // end catch 
+             catch (IOException e){
+                Log.e(TAG, e.toString());
+             }
+	   }
+		   
    }
    
    public void startRecording(View v){
@@ -228,8 +271,7 @@ public void startStop(View v){
        recorder.stop(); // stop recording
        recorder.reset(); // reset the MediaRecorder
        recording = false; // we are no longer recording
-       TextView tv = (TextView) findViewById(R.id.statusText);
-       tv.setText("stopped");
+       
    }
    
    public String getTime(){
