@@ -228,6 +228,7 @@ public class Categories extends Activity {
    	                         Arrays.asList(getExternalFilesDir(null).list()));
    	                	create = "Create New Category";
    	                	for(String str : values2){
+   	                		
    	                			int i = 0;
    	                			File f = getExternalFilesDir(str);
    	                			if(f.isDirectory()){

@@ -127,6 +127,7 @@ public void startStop(View v){
              	         
              	            
              	         // create an input dialog to get recording name from user
+             	         
              	         new AlertDialog.Builder(VoiceRecorder.this)
              	         .setTitle("Create New Category")
              	         .setView(nameEditText)
