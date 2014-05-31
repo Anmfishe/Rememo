@@ -14,6 +14,7 @@ import java.util.List;
 
 
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -84,6 +85,7 @@ public class Categories extends Activity {
         values = new ArrayList<String>();
         values2 = new ArrayList<String>(
                 Arrays.asList(getExternalFilesDir(null).list()));
+        Collections.sort(values2, String.CASE_INSENSITIVE_ORDER);
         create = "Create New Category";
         for(String str : values2){
         	int i = 0;
@@ -138,6 +140,7 @@ public class Categories extends Activity {
             	                	 values.clear();
             	                	 values2 = new ArrayList<String>(
             	                             Arrays.asList(Categories.this.getExternalFilesDir(null).list()));
+            	                	 Collections.sort(values2, String.CASE_INSENSITIVE_ORDER);
             	                	 for(String str : values2){
             	                     	int i = 0;
             	                     	File f = getExternalFilesDir(str);
@@ -226,6 +229,7 @@ public class Categories extends Activity {
    	                	values.clear();
    	                	values2 = new ArrayList<String>(
    	                         Arrays.asList(getExternalFilesDir(null).list()));
+   	                	Collections.sort(values2, String.CASE_INSENSITIVE_ORDER);
    	                	create = "Create New Category";
    	                	for(String str : values2){
    	                		
@@ -274,6 +278,7 @@ public class Categories extends Activity {
                         new File(f, children[i]).delete();
                     }
                 }
+                values2.remove(i);
                 f.delete();
             	}
             	return true;
