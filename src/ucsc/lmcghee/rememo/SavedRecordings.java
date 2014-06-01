@@ -65,7 +65,7 @@ public class SavedRecordings extends ListActivity {
 	static String location = null;
 	ArrayAdapter<String> adapter;
 	int i;
-	// AudioManager audioManager;
+
 	static Context context;
 
 	// called when the activity is first created
@@ -79,12 +79,7 @@ public class SavedRecordings extends ListActivity {
 			location = extra.getString("KEY");
 		}
 
-		// init audioManager and context
-		// audioManager =
-		// (AudioManager)SavedRecordings.this.getSystemService(Context.AUDIO_SERVICE);
-		// setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		// get ListView and set its listeners and adapter
 		listView = getListView();
 		savedRecordingsAdapter = new SavedRecordingsAdapter(this,
 				new ArrayList<String>(Arrays.asList(getExternalFilesDir(
@@ -94,22 +89,12 @@ public class SavedRecordings extends ListActivity {
 
 		handler = new Handler(); // updates SeekBar thumb position
 
-		// get other GUI components and register listeners
 		progressSeekBar = (SeekBar) findViewById(R.id.progressSeekBar);
 		progressSeekBar.setOnSeekBarChangeListener(progressChangeListener);
 		playPauseButton = (ToggleButton) findViewById(R.id.playPauseButton);
 		playPauseButton.setOnCheckedChangeListener(playPauseButtonListener);
 		nowPlayingTextView = (TextView) findViewById(R.id.nowPlayingTextView);
 
-		/*
-		 * ArrayList<String> values2 = new ArrayList<String>(
-		 * Arrays.asList(getExternalFilesDir(null).list())); //values2.add();
-		 * adapter = new ArrayAdapter<String>(SavedRecordings.this,
-		 * R.layout.saved_recordings_row, R.id.nameTextView, values2);
-		 * Log.d("WHAT", adapter.toString()); lv = (ListView)
-		 * findViewById(R.id.listview2); Log.d("WHAT", lv.toString());
-		 * lv.setAdapter(adapter); Log.d("WHAT", "yo4");
-		 */
 		VoiceRecorder.initiate();
 
 	} // end method onCreate
@@ -132,11 +117,10 @@ public class SavedRecordings extends ListActivity {
 			mediaPlayer.release(); // release MediaPlayer resources
 			mediaPlayer = null;
 		}
-		super.onPause();// end if
+		super.onPause();
 	} // end method onPause
 
-	// Class for implementing the "ViewHolder pattern"
-	// for better ListView performance
+
 	private static class ViewHolder {
 		TextView nameTextView;
 	} // end class ViewHolder
@@ -157,8 +141,6 @@ public class SavedRecordings extends ListActivity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder viewHolder; // holds references to current item's GUI
 
-			// if convertView is null, inflate GUI and create ViewHolder;
-			// otherwise, get existing ViewHolder
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.saved_recordings_row,
 						null);
@@ -309,11 +291,7 @@ public class SavedRecordings extends ListActivity {
 
 			} else {
 				mediaPlayer.pause(); // pause the MediaPlayer
-				/*
-				 * audioManager.setMode(AudioManager.MODE_NORMAL);
-				 * audioManager.setMode(AudioManager.MODE_IN_CALL);
-				 * audioManager.setSpeakerphoneOn(false);
-				 */
+
 			}
 		} // end method onCheckedChanged
 	}; // end OnCheckedChangedListener
@@ -451,8 +429,7 @@ public class SavedRecordings extends ListActivity {
 										InputMethodManager.SHOW_FORCED,
 										InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-						// create an input dialog to get recording name from
-						// user
+
 						new AlertDialog.Builder(SavedRecordings.this)
 								.setTitle("Create New Category")
 								.setView(nameEditText)

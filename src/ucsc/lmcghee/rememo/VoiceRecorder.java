@@ -81,14 +81,11 @@ public class VoiceRecorder extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		activity = this;
-
 		bt = (Button) findViewById(R.id.recordButton);
 		bt2 = (Button) findViewById(R.id.viewSaved);
 		createNotification();
 		notificationOn = true;
-
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		// myTask = new ButtonHelper(this);
 
 	}
 
@@ -110,20 +107,16 @@ public class VoiceRecorder extends Activity {
 		}
 	}
 
-	private void createDir(String s) {
-		File direct = getExternalFilesDir(s);
-		// direct.mkdir();
+	public static void initiate() {
+		initiated = true;
 	}
-	public static void initiate(){
-		initiated  = true;
-	}
-	public static void initiate2(){
+
+	public static void initiate2() {
 		initiated2 = true;
 	}
 
 	public void startStop(View v) {
-		// bt = (Button) findViewById(R.id.recordButton);
-		// bt2 = (Button) findViewById(R.id.viewSaved);
+
 		v2 = v;
 		if (recording) {
 			stopRecording(v);
@@ -149,7 +142,6 @@ public class VoiceRecorder extends Activity {
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							// Do nothing.
 
 							newFile.delete();
 							TextView tv = (TextView) findViewById(R.id.statusText);
@@ -167,8 +159,6 @@ public class VoiceRecorder extends Activity {
 					if (temp.equals("Create New Category")) {
 
 						LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						View v1 = inflater
-								.inflate(R.layout.name_edittext, null);
 						final EditText nameEditText = new EditText(
 								VoiceRecorder.this);
 						nameEditText
@@ -253,14 +243,12 @@ public class VoiceRecorder extends Activity {
 											}
 										}).show();
 					} else {
-
 						try {
 
 							tmpFile = new File(getExternalFilesDir(temp)
 									.getAbsolutePath()
 									+ File.separator
 									+ getTime() + ".3gp");
-							// Log.d("Go", tmp)
 							newFile.renameTo(tmpFile);
 							TextView tv = (TextView) findViewById(R.id.statusText);
 							tv.setText("Stopped");
@@ -306,7 +294,6 @@ public class VoiceRecorder extends Activity {
 				recorder.prepare(); // prepare to record
 				recorder.start(); // start recording
 				recording = true; // we are currently recording
-
 				TextView tv = (TextView) findViewById(R.id.statusText);
 				tv.setText("recording");
 
@@ -330,24 +317,14 @@ public class VoiceRecorder extends Activity {
 		recorder.setAudioEncodingBitRate(96000);
 		recorder.setAudioSamplingRate(44100);
 
-		// Create a file for the audio to be saved into
-		/*
-		 * File newFile = new File(
-		 * getExternalFilesDir("New Memos").getAbsolutePath() + File.separator +
-		 * getTime() + ".3gp");
-		 */
-
-	} // end try
-
-	// end catch
+	}
 
 	public void stopRecording(View v) {
 		if (!recording)
-			return; // breaks here if not currently recording
-		recorder.stop(); // stop recording
-		recorder.reset(); // reset the MediaRecorder
-		recording = false; // we are no longer recording
-
+			return;
+		recorder.stop();
+		recorder.reset();
+		recording = false;
 	}
 
 	public static Boolean getRecording() {
@@ -373,7 +350,6 @@ public class VoiceRecorder extends Activity {
 		time = Integer.toString(1 + myCalendar.get(Calendar.MONTH)) + "-"
 				+ Integer.toString(myCalendar.get(Calendar.DAY_OF_MONTH)) + " "
 				+ Integer.toString(myCalendar.get(Calendar.HOUR_OF_DAY));
-
 		if (myCalendar.get(Calendar.MINUTE) > 9)
 			time = time + ":"
 					+ Integer.toString(myCalendar.get(Calendar.MINUTE));
@@ -424,24 +400,16 @@ public class VoiceRecorder extends Activity {
 		notification.contentView = contentView;
 		nm.notify(0, notification);
 
-		// bt3.setTextColor(activity.getResources().getColor(
-		// R.color.white));
 		Button b2 = (Button) activity.findViewById(R.id.recordButton);
 		b2.setText(R.string.rec);
 		b2.setTextColor(activity.getResources().getColor(R.color.white));
 		Button b3 = (Button) activity.findViewById(R.id.viewSaved);
 		b3.setEnabled(true);
-		
 
 	}
 
 	public static void setRecording(Activity activity) {
 
-		// Button b = (Button) activity.findViewById(R.id.button1);
-		// bt3.setTextColor(activity.getResources().getColor(
-		// R.color.red));
-
-		// TextView tv = (TextView) activity.findViewById(R.id.textView);
 		final String text = ("Rememoing");
 		contentView.setTextViewText(R.id.textView, text);
 		contentView.setTextColor(R.id.textView, Color.RED);
@@ -472,7 +440,6 @@ public class VoiceRecorder extends Activity {
 
 		// Sets the small icon for the ticker
 		builder.setSmallIcon(R.drawable.abc_ic_ab_back_holo_dark);
-		// builder.set(R.drawable.abc_ic_ab_back_holo_dark);
 
 		// Cancel the notification when clicked
 		builder.setAutoCancel(true);
@@ -493,30 +460,10 @@ public class VoiceRecorder extends Activity {
 				buttonIntent, 0);
 		contentView.setOnClickPendingIntent(R.id.button1, pbuttonIntent);
 
-		/*
-		 * Workaround: Need to set the content view here directly on the
-		 * notification. NotificationCompatBuilder contains a bug that prevents
-		 * this from working on platform versions HoneyComb. See
-		 * https://code.google.com/p/android/issues/detail?id=30495
-		 */
 		notification.contentView = contentView;
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
 		notification.icon = R.drawable.ic_launcher;
 
-		// Add a big content view to the notification if supported.
-		// Support for expanded notifications was added in API level 16.
-		// (The normal contentView is shown when the notification is collapsed,
-		// when expanded the
-		// big content view set here is displayed.)
-		/*
-		 * if (Build.VERSION.SDK_INT >= 16) { // Inflate and set the layout for
-		 * the expanded notification view RemoteViews expandedView = new
-		 * RemoteViews(getPackageName(), R.layout.notification_expanded);
-		 * notification.bigContentView = expandedView; }
-		 */
-
-		// START_INCLUDE(notify)
-		// Use the NotificationManager to show the notification
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nm.notify(0, notification);
 
@@ -531,10 +478,10 @@ public class VoiceRecorder extends Activity {
 				recorder.stop(); // stop recording
 				recorder.reset(); // reset the MediaRecorder
 				recording = false; // we are no longer recording
-				if(initiated){
-				SavedRecordings.refresh(newFile.getName());
+				if (initiated) {
+					SavedRecordings.refresh(newFile.getName());
 				}
-				if(initiated2){
+				if (initiated2) {
 					Categories.refresh();
 				}
 
@@ -565,10 +512,7 @@ public class VoiceRecorder extends Activity {
 				catch (IOException e) {
 					Log.e(TAG, e.toString());
 				}
-
 			}
 		}
-
 	}
-
 }

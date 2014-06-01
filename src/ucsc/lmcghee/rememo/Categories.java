@@ -65,9 +65,6 @@ public class Categories extends Activity {
 		setContentView(R.layout.categories_screen);
 		context = Categories.this;
 		VoiceRecorder.initiate2();
-		
-
-		// Set volume control
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 	}
@@ -95,7 +92,6 @@ public class Categories extends Activity {
 		Log.d("WHAT", values.toString());
 		values2.add(create);
 		values.add(create);
-		// adapter = new MyRecordingsAdapter(this, values2, values);
 		adapter = new ArrayAdapter<String>(this, R.layout.saved_recordings_row,
 				R.id.nameTextView, values);
 
@@ -107,7 +103,6 @@ public class Categories extends Activity {
 					int position, long id) {
 				int itemPosition = position;
 				String itemValue = values2.get(position);
-				// (String) listView.getItemAtPosition(position);
 
 				if (itemValue.equals(create)) {
 					LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -165,7 +160,6 @@ public class Categories extends Activity {
 																+ ")");
 													}
 												}
-												Log.d("WHAT", values.toString());
 												values2.add(create);
 												values.add(create);
 
@@ -181,7 +175,6 @@ public class Categories extends Activity {
 																nameEditText
 																		.getWindowToken(),
 																0);
-
 											}
 										}
 									})
@@ -346,7 +339,6 @@ public class Categories extends Activity {
 
 	private void createDir(String s) {
 		File direct = getExternalFilesDir(s);
-		// direct.mkdir();
 	}
 
 	public static void refresh() {
@@ -359,7 +351,7 @@ public class Categories extends Activity {
 				int i;
 				for (i = 0; i < children.length; i++) {
 				}
-				
+
 				values.remove(j);
 				values.add(j, s + " (" + Integer.toString(i) + ")");
 				adapter.notifyDataSetChanged();
