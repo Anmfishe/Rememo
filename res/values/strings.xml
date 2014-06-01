@@ -12,6 +12,7 @@
     <string name="button_delete">Delete</string>
     <string name="button_pause">Pause</string>
     <string name="button_play">Play</string>
+    <string name="colapsed">Yolo</string>
     <string name="button_record">Record</string>
     <string name="button_save">Save</string>
     <string name="button_stop">Stop</string>

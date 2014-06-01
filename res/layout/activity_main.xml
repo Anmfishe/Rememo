@@ -52,6 +52,16 @@
             android:text="Record New"
             android:textColor="@color/white" />
 
+        <Button
+            android:id="@+id/notifbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/viewSaved"
+            android:layout_centerHorizontal="true"
+            android:onClick="showNotificationClicked"
+            android:text="Remove Notification"
+            android:textColor="@color/white" />
+
     </RelativeLayout>
 
 </FrameLayout>
