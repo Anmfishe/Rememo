@@ -3,64 +3,68 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="ucsc.lmcghee.rememo.MainActivity"
     tools:ignore="MergeRootFrame" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey" >
-
-        <Button
-            android:id="@+id/viewSaved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:onClick="viewSaved"
-            android:text="View Saved"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/statusText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView2"
-            android:layout_centerHorizontal="true"
-            android:text="stopped"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="64dp"
-            android:text="Status:"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white" />
-
-        <Button
-            android:id="@+id/recordButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/viewSaved"
-            android:layout_centerHorizontal="true"
-            android:onClick="startStop"
-            android:text="Record New"
-            android:textColor="@color/white" />
+        android:background="@color/white" >
 
         <Button
             android:id="@+id/notifbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/viewSaved"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="18dp"
             android:onClick="showNotificationClicked"
             android:text="Remove Notification"
-            android:textColor="@color/white" />
+            android:textColor="@color/purp" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="70dp"
+            android:gravity="center"
+            android:text="Stopped"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/blue" />
+
+        <Button
+            android:id="@+id/recordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/notifbutton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/statusText"
+            android:layout_marginLeft="164dp"
+            android:layout_marginTop="109dp"
+            android:onClick="startStop"
+            android:shadowColor="@color/blue"
+            android:text="Record New"
+            android:textColor="@color/purp"
+            android:textColorHint="@color/blue" />
+
+        <Button
+            android:id="@+id/viewSaved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/notifbutton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/recordButton"
+            android:layout_marginRight="156dp"
+            android:onClick="viewSaved"
+            android:text="View Saved"
+            android:textColor="@color/purp" />
 
     </RelativeLayout>
 

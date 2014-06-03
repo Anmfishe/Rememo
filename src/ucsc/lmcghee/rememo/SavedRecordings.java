@@ -158,6 +158,7 @@ public class SavedRecordings extends ListActivity {
 			// get and display name of recording file
 			String item = items.get(position);
 			viewHolder.nameTextView.setText(item);
+			viewHolder.nameTextView.setTextColor(getResources().getColor(R.color.purp));
 
 			return convertView;
 		} // end method getView
