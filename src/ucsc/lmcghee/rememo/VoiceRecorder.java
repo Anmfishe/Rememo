@@ -46,6 +46,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class VoiceRecorder extends Activity {
 	private static final String TAG = VoiceRecorder.class.getName();
@@ -59,6 +60,7 @@ public class VoiceRecorder extends Activity {
 	boolean notificationOn;
 	static boolean initiated;
 	static boolean initiated2;
+	static boolean named;
 	Button bt;
 	Button bt2;
 	static Button bt3;
@@ -66,7 +68,7 @@ public class VoiceRecorder extends Activity {
 	View v3;
 	Thread myThread;
 	static TextView textView;
-
+	static Context ctx;
 	ViewGroup root;
 	LayoutInflater inflater;
 	AudioManager audioManager;
@@ -75,6 +77,7 @@ public class VoiceRecorder extends Activity {
 	static Notification notification;
 	static NotificationManager nm;
 	static RemoteViews contentView;
+	String name;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,7 @@ public class VoiceRecorder extends Activity {
 		createNotification();
 		notificationOn = true;
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		ctx = VoiceRecorder.this;
 
 	}
 
@@ -128,147 +132,232 @@ public class VoiceRecorder extends Activity {
 				nm.notify(0, notification);
 			}
 
-			ArrayList<String> values2 = new ArrayList<String>(
-					Arrays.asList(VoiceRecorder.this.getExternalFilesDir(null)
-							.list()));
-			String create = "Create New Category";
-			values2.add(create);
-			final CharSequence[] cs = values2.toArray(new CharSequence[values2
-					.size()]);
+			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			final EditText nameEditText = new EditText(VoiceRecorder.this);
+			nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+			((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+					.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+							InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Make your selection");
-			builder.setNegativeButton("Cancel",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
+			new AlertDialog.Builder(VoiceRecorder.this)
+					.setTitle("Name")
+					.setView(nameEditText)
+					.setPositiveButton("Ok",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+									((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+											.hideSoftInputFromWindow(
+													nameEditText
+															.getWindowToken(),
+													0);
 
-							newFile.delete();
-							TextView tv = (TextView) findViewById(R.id.statusText);
-							tv.setText("Stopped");
-							bt.setText(R.string.rec);
-							bt.setTextColor(getResources().getColor(
-									R.color.white));
-							bt2.setEnabled(true);
-						}
-					});
-			builder.setItems(cs, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-					String temp = (String) cs[item];
+									String value = nameEditText.getText()
+											.toString().trim();
+									if (value.length() != 0) {
+										name = value;
+										ArrayList<String> values2 = new ArrayList<String>(
+												Arrays.asList(VoiceRecorder.this
+														.getExternalFilesDir(
+																null).list()));
+										String create = "Create New Category";
+										values2.add(create);
+										final CharSequence[] cs = values2
+												.toArray(new CharSequence[values2
+														.size()]);
 
-					if (temp.equals("Create New Category")) {
+										AlertDialog.Builder builder = new AlertDialog.Builder(
+												ctx);
+										builder.setTitle("Make your selection");
+										builder.setNegativeButton(
+												"Cancel",
+												new DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int whichButton) {
 
-						LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						final EditText nameEditText = new EditText(
-								VoiceRecorder.this);
-						nameEditText
-								.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+														newFile.delete();
+														TextView tv = (TextView) findViewById(R.id.statusText);
+														tv.setText("Stopped");
+														bt.setText(R.string.rec);
+														bt.setTextColor(getResources()
+																.getColor(
+																		R.color.white));
+														bt2.setEnabled(true);
+													}
+												});
+										builder.setItems(
+												cs,
+												new DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int item) {
+														String temp = (String) cs[item];
 
-						((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-								.toggleSoftInput(
-										InputMethodManager.SHOW_FORCED,
-										InputMethodManager.HIDE_IMPLICIT_ONLY);
+														if (temp.equals("Create New Category")) {
 
-						// create an input dialog to get recording name from
-						// user
-						new AlertDialog.Builder(VoiceRecorder.this)
-								.setTitle("Create New Category")
-								.setView(nameEditText)
-								.setPositiveButton("Ok",
-										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int whichButton) {
-												String value = nameEditText
-														.getText().toString()
-														.trim();
-												if (value.length() != 0) {
-													((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-															.hideSoftInputFromWindow(
-																	nameEditText
-																			.getWindowToken(),
-																	0);
-													tmpFile = new File(
-															getExternalFilesDir(
-																	value)
-																	.getAbsolutePath()
-																	+ File.separator
-																	+ getTime()
-																	+ ".3gp");
-													newFile.renameTo(tmpFile);
-													TextView tv = (TextView) findViewById(R.id.statusText);
-													tv.setText("Stopped");
-													bt.setText(R.string.rec);
-													bt.setTextColor(getResources()
-															.getColor(
-																	R.color.white));
-													bt2.setEnabled(true);
+															LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+															final EditText nameEditText = new EditText(
+																	VoiceRecorder.this);
+															nameEditText
+																	.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
-												} else {
-													((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-															.hideSoftInputFromWindow(
-																	nameEditText
-																			.getWindowToken(),
-																	0);
-													newFile.delete();
-													TextView tv = (TextView) findViewById(R.id.statusText);
-													tv.setText("Stopped");
-													bt.setText(R.string.rec);
-													bt.setTextColor(getResources()
-															.getColor(
-																	R.color.white));
-													bt2.setEnabled(true);
+															((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+																	.toggleSoftInput(
+																			InputMethodManager.SHOW_FORCED,
+																			InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-												}
-											}
-										})
-								.setNegativeButton("Cancel",
-										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int whichButton) {
-												// Do nothing.
-												((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-														.hideSoftInputFromWindow(
-																nameEditText
-																		.getWindowToken(),
-																0);
-												newFile.delete();
-												TextView tv = (TextView) findViewById(R.id.statusText);
-												tv.setText("Stopped");
-												bt.setText(R.string.rec);
-												bt.setTextColor(getResources()
-														.getColor(R.color.white));
-												bt2.setEnabled(true);
-											}
-										}).show();
-					} else {
-						try {
+															// create an input
+															// dialog to get
+															// recording name
+															// from
+															// user
+															new AlertDialog.Builder(
+																	VoiceRecorder.this)
+																	.setTitle(
+																			"Create New Category")
+																	.setView(
+																			nameEditText)
+																	.setPositiveButton(
+																			"Ok",
+																			new DialogInterface.OnClickListener() {
+																				public void onClick(
+																						DialogInterface dialog,
+																						int whichButton) {
+																					String value = nameEditText
+																							.getText()
+																							.toString()
+																							.trim();
+																					if (value
+																							.length() != 0) {
+																						((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+																								.hideSoftInputFromWindow(
+																										nameEditText
+																												.getWindowToken(),
+																										0);
+																						tmpFile = new File(
+																								getExternalFilesDir(
+																										value)
+																										.getAbsolutePath()
+																										+ File.separator
+																										+ name
+																										+ ".3gp");
+																						newFile.renameTo(tmpFile);
+																						TextView tv = (TextView) findViewById(R.id.statusText);
+																						tv.setText("Stopped");
+																						bt.setText(R.string.rec);
+																						bt.setTextColor(getResources()
+																								.getColor(
+																										R.color.white));
+																						bt2.setEnabled(true);
 
-							tmpFile = new File(getExternalFilesDir(temp)
-									.getAbsolutePath()
-									+ File.separator
-									+ getTime() + ".3gp");
-							newFile.renameTo(tmpFile);
-							TextView tv = (TextView) findViewById(R.id.statusText);
-							tv.setText("Stopped");
-							bt.setText(R.string.rec);
-							bt.setTextColor(getResources().getColor(
-									R.color.white));
-							bt2.setEnabled(true);
-						} catch (IllegalStateException e) {
-							Log.e(TAG, e.toString());
-						} // end catch
+																					} else {
+																						((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+																								.hideSoftInputFromWindow(
+																										nameEditText
+																												.getWindowToken(),
+																										0);
+																						newFile.delete();
+																						TextView tv = (TextView) findViewById(R.id.statusText);
+																						tv.setText("Stopped");
+																						bt.setText(R.string.rec);
+																						bt.setTextColor(getResources()
+																								.getColor(
+																										R.color.white));
+																						bt2.setEnabled(true);
 
-					}
-				}
-			}).show();
+																					}
+																				}
+																			})
+																	.setNegativeButton(
+																			"Cancel",
+																			new DialogInterface.OnClickListener() {
+																				public void onClick(
+																						DialogInterface dialog,
+																						int whichButton) {
+																					// Do
+																					// nothing.
+																					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+																							.hideSoftInputFromWindow(
+																									nameEditText
+																											.getWindowToken(),
+																									0);
+																					newFile.delete();
+																					TextView tv = (TextView) findViewById(R.id.statusText);
+																					tv.setText("Stopped");
+																					bt.setText(R.string.rec);
+																					bt.setTextColor(getResources()
+																							.getColor(
+																									R.color.white));
+																					bt2.setEnabled(true);
+																				}
+																			})
+																	.show();
+														} else {
+															try {
 
-			TextView tv = (TextView) findViewById(R.id.statusText);
-			tv.setText("Stopped");
-			bt.setText(R.string.rec);
-			bt.setTextColor(getResources().getColor(R.color.white));
-			bt2.setEnabled(true);
+																tmpFile = new File(
+																		getExternalFilesDir(
+																				temp)
+																				.getAbsolutePath()
+																				+ File.separator
+																				+ name
+																				+ ".3gp");
+																newFile.renameTo(tmpFile);
+																TextView tv = (TextView) findViewById(R.id.statusText);
+																tv.setText("Stopped");
+																bt.setText(R.string.rec);
+																bt.setTextColor(getResources()
+																		.getColor(
+																				R.color.white));
+																bt2.setEnabled(true);
+															} catch (IllegalStateException e) {
+																Log.e(TAG,
+																		e.toString());
+															} // end catch
+
+														}
+													}
+												}).show();
+
+										TextView tv = (TextView) findViewById(R.id.statusText);
+										tv.setText("Stopped");
+										bt.setText(R.string.rec);
+										bt.setTextColor(getResources()
+												.getColor(R.color.white));
+										bt2.setEnabled(true);
+									} else {
+										newFile.delete();
+										TextView tv = (TextView) findViewById(R.id.statusText);
+										tv.setText("Stopped");
+										bt.setText(R.string.rec);
+										bt.setTextColor(getResources()
+												.getColor(R.color.white));
+										bt2.setEnabled(true);
+										named = false;
+									}
+
+								}
+							})
+					.setNegativeButton("Cancel",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+									((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+											.hideSoftInputFromWindow(
+													nameEditText
+															.getWindowToken(),
+													0);
+									newFile.delete();
+									TextView tv = (TextView) findViewById(R.id.statusText);
+									tv.setText("Stopped");
+									bt.setText(R.string.rec);
+									bt.setTextColor(getResources().getColor(
+											R.color.white));
+									bt2.setEnabled(true);
+									named = false;
+								}
+							}).show();
 
 		}
 
@@ -405,6 +494,9 @@ public class VoiceRecorder extends Activity {
 		b2.setTextColor(activity.getResources().getColor(R.color.white));
 		Button b3 = (Button) activity.findViewById(R.id.viewSaved);
 		b3.setEnabled(true);
+		Toast toast = Toast.makeText(ctx, "Saved to New Memos",
+				Toast.LENGTH_SHORT);
+		toast.show();
 
 	}
 
