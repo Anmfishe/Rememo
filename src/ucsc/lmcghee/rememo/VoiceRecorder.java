@@ -8,13 +8,11 @@ package ucsc.lmcghee.rememo;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
-import java.util.zip.Inflater;
+
 
 import ucsc.lmcghee.rememo.R.color;
 import android.annotation.SuppressLint;
@@ -27,15 +25,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
+
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
+
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -132,7 +128,7 @@ public class VoiceRecorder extends Activity {
 				nm.notify(0, notification);
 			}
 
-			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
 			final EditText nameEditText = new EditText(VoiceRecorder.this);
 			nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 			((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
@@ -196,7 +192,7 @@ public class VoiceRecorder extends Activity {
 
 														if (temp.equals("Create New Category")) {
 
-															LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
 															final EditText nameEditText = new EditText(
 																	VoiceRecorder.this);
 															nameEditText
