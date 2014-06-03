@@ -458,7 +458,7 @@ public class VoiceRecorder extends Activity {
 		Intent buttonIntent = new Intent(this, switchButtonListener.class);
 		PendingIntent pbuttonIntent = PendingIntent.getBroadcast(this, 1,
 				buttonIntent, 0);
-		contentView.setOnClickPendingIntent(R.id.button1, pbuttonIntent);
+		contentView.setOnClickPendingIntent(R.id.imageButton1, pbuttonIntent);
 
 		notification.contentView = contentView;
 		notification.flags = Notification.FLAG_ONGOING_EVENT;

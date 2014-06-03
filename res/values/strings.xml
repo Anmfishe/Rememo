@@ -28,7 +28,9 @@
     <color name="holo_blue_dark">#0099cc</color>
     <color name="holo_blue_bright">#00ddff</color>
     <color name="white">#ffffff</color>
-    <color name="grey">#444444</color>
+    <color name="grey">#1a1a1a</color>
     <color name="red">#E61C1C</color>
+    <color name="blue">#197ff0</color>
+    <color name="purp">#610d75</color>
 
 </resources>
