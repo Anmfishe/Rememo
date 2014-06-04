@@ -37,34 +37,38 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/blue" />
 
-        <Button
-            android:id="@+id/recordButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/notifbutton"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@+id/statusText"
-            android:layout_marginLeft="164dp"
-            android:layout_marginTop="109dp"
-            android:onClick="startStop"
-            android:shadowColor="@color/blue"
-            android:text="Record New"
-            android:textColor="@color/purp"
-            android:textColorHint="@color/blue" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp" >
 
-        <Button
-            android:id="@+id/viewSaved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/notifbutton"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/recordButton"
-            android:layout_marginRight="156dp"
-            android:onClick="viewSaved"
-            android:text="View Saved"
-            android:textColor="@color/purp" />
+            <Button
+                android:id="@+id/viewSaved"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="viewSaved"
+                android:text="View Saved"
+                android:textColor="@color/purp" />
+
+            <Button
+                android:id="@+id/recordButton"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:onClick="startStop"
+                android:scaleType="fitCenter"
+                android:shadowColor="@color/blue"
+                android:src="@drawable/butt_record_new"
+                android:text="Record New"
+                android:textColor="@color/purp"
+                android:textColorHint="@color/blue" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 
