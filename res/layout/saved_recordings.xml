@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/black"
     android:orientation="vertical"
     android:paddingLeft="15dp"
     android:paddingRight="10dp" >
@@ -25,9 +25,12 @@
           android:layout_width="75dp"
           android:layout_height="wrap_content"
           android:layout_marginRight="5dp"
-          android:textColor="@color/purp"
+          android:background="@color/purp"
+          android:textColor="@color/white"
           android:textOff="@string/button_play"
-          android:textOn="@string/button_pause" />
+          android:textOn="@string/button_pause"
+          android:textSize="24sp"
+          android:textStyle="bold" />
 
       <SeekBar android:id="@+id/progressSeekBar" 
          android:layout_height="wrap_content" 

@@ -117,7 +117,7 @@ public class VoiceRecorder extends Activity {
 			tv.setTextColor(getResources().getColor(R.color.blue));
 			bt.setText(R.string.rec);
 			bt.setTextColor(getResources()
-					.getColor(R.color.purp));
+					.getColor(R.color.white));
 			bt2.setEnabled(true);
 		}
 	}
@@ -197,7 +197,7 @@ public class VoiceRecorder extends Activity {
 														bt.setText(R.string.rec);
 														bt.setTextColor(getResources()
 																.getColor(
-																		R.color.purp));
+																		R.color.white));
 														bt2.setEnabled(true);
 													}
 												});
@@ -264,7 +264,7 @@ public class VoiceRecorder extends Activity {
 																						bt.setText(R.string.rec);
 																						bt.setTextColor(getResources()
 																								.getColor(
-																										R.color.purp));
+																										R.color.white));
 																						bt2.setEnabled(true);
 
 																					} else {
@@ -280,7 +280,7 @@ public class VoiceRecorder extends Activity {
 																						bt.setText(R.string.rec);
 																						bt.setTextColor(getResources()
 																								.getColor(
-																										R.color.purp));
+																										R.color.white));
 																						bt2.setEnabled(true);
 
 																					}
@@ -306,7 +306,7 @@ public class VoiceRecorder extends Activity {
 																					bt.setText(R.string.rec);
 																					bt.setTextColor(getResources()
 																							.getColor(
-																									R.color.purp));
+																									R.color.white));
 																					bt2.setEnabled(true);
 																				}
 																			})
@@ -328,7 +328,7 @@ public class VoiceRecorder extends Activity {
 																bt.setText(R.string.rec);
 																bt.setTextColor(getResources()
 																		.getColor(
-																				R.color.purp));
+																				R.color.white));
 																bt2.setEnabled(true);
 															} catch (IllegalStateException e) {
 																Log.e(TAG,
@@ -344,7 +344,7 @@ public class VoiceRecorder extends Activity {
 										tv.setTextColor(getResources().getColor(R.color.blue));
 										bt.setText(R.string.rec);
 										bt.setTextColor(getResources()
-												.getColor(R.color.purp));
+												.getColor(R.color.white));
 										bt2.setEnabled(true);
 									} else {
 										newFile.delete();
@@ -353,7 +353,7 @@ public class VoiceRecorder extends Activity {
 										tv.setTextColor(getResources().getColor(R.color.blue));
 										bt.setText(R.string.rec);
 										bt.setTextColor(getResources()
-												.getColor(R.color.purp));
+												.getColor(R.color.white));
 										bt2.setEnabled(true);
 										named = false;
 									}
@@ -375,7 +375,7 @@ public class VoiceRecorder extends Activity {
 									tv.setTextColor(getResources().getColor(R.color.blue));
 									bt.setText(R.string.rec);
 									bt.setTextColor(getResources().getColor(
-											R.color.purp));
+											R.color.white));
 									bt2.setEnabled(true);
 									named = false;
 								}
@@ -508,13 +508,13 @@ public class VoiceRecorder extends Activity {
 
 		final String text = ("Rememo");
 		contentView.setTextViewText(R.id.textView, text);
-		contentView.setTextColor(R.id.textView, activity.getResources().getColor(R.color.purp) );
+		contentView.setTextColor(R.id.textView, activity.getResources().getColor(R.color.white) );
 		notification.contentView = contentView;
 		nm.notify(0, notification);
 
 		Button b2 = (Button) activity.findViewById(R.id.recordButton);
 		b2.setText(R.string.rec);
-		b2.setTextColor(activity.getResources().getColor(R.color.purp));
+		b2.setTextColor(activity.getResources().getColor(R.color.white));
 		Button b3 = (Button) activity.findViewById(R.id.viewSaved);
 		b3.setEnabled(true);
 		TextView tv = (TextView) activity.findViewById(R.id.statusText);
