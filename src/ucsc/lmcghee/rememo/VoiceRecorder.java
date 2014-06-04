@@ -145,6 +145,12 @@ public class VoiceRecorder extends Activity {
 			TextView tv = (TextView) findViewById(R.id.statusText);
 			tv.setText("Stopped");
 			tv.setTextColor(getResources().getColor(R.color.blue));
+			bt.setText(R.string.rec);
+			bt.setTextColor(getResources()
+					.getColor(
+							R.color.white));
+			bt2.setEnabled(true);
+			
 
 
 			final EditText nameEditText = new EditText(VoiceRecorder.this);
@@ -191,14 +197,7 @@ public class VoiceRecorder extends Activity {
 															int whichButton) {
 
 														newFile.delete();
-														TextView tv = (TextView) findViewById(R.id.statusText);
-														tv.setText("Stopped");
-														tv.setTextColor(getResources().getColor(R.color.blue));
-														bt.setText(R.string.rec);
-														bt.setTextColor(getResources()
-																.getColor(
-																		R.color.white));
-														bt2.setEnabled(true);
+														
 													}
 												});
 										builder.setItems(
@@ -258,14 +257,7 @@ public class VoiceRecorder extends Activity {
 																										+ name
 																										+ ".3gp");
 																						newFile.renameTo(tmpFile);
-																						TextView tv = (TextView) findViewById(R.id.statusText);
-																						tv.setText("Stopped");
-																						tv.setTextColor(getResources().getColor(R.color.blue));
-																						bt.setText(R.string.rec);
-																						bt.setTextColor(getResources()
-																								.getColor(
-																										R.color.white));
-																						bt2.setEnabled(true);
+																						
 
 																					} else {
 																						((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
@@ -274,14 +266,7 @@ public class VoiceRecorder extends Activity {
 																												.getWindowToken(),
 																										0);
 																						newFile.delete();
-																						TextView tv = (TextView) findViewById(R.id.statusText);
-																						tv.setText("Stopped");
-																						tv.setTextColor(getResources().getColor(R.color.blue));
-																						bt.setText(R.string.rec);
-																						bt.setTextColor(getResources()
-																								.getColor(
-																										R.color.white));
-																						bt2.setEnabled(true);
+																						
 
 																					}
 																				}
@@ -300,14 +285,7 @@ public class VoiceRecorder extends Activity {
 																											.getWindowToken(),
 																									0);
 																					newFile.delete();
-																					TextView tv = (TextView) findViewById(R.id.statusText);
-																					tv.setText("Stopped");
-																					tv.setTextColor(getResources().getColor(R.color.blue));
-																					bt.setText(R.string.rec);
-																					bt.setTextColor(getResources()
-																							.getColor(
-																									R.color.white));
-																					bt2.setEnabled(true);
+																					
 																				}
 																			})
 																	.show();
@@ -322,14 +300,7 @@ public class VoiceRecorder extends Activity {
 																				+ name
 																				+ ".3gp");
 																newFile.renameTo(tmpFile);
-																TextView tv = (TextView) findViewById(R.id.statusText);
-																tv.setText("Stopped");
-																tv.setTextColor(getResources().getColor(R.color.blue));
-																bt.setText(R.string.rec);
-																bt.setTextColor(getResources()
-																		.getColor(
-																				R.color.white));
-																bt2.setEnabled(true);
+																
 															} catch (IllegalStateException e) {
 																Log.e(TAG,
 																		e.toString());
@@ -339,23 +310,11 @@ public class VoiceRecorder extends Activity {
 													}
 												}).show();
 
-										TextView tv = (TextView) findViewById(R.id.statusText);
-										tv.setText("Stopped");
-										tv.setTextColor(getResources().getColor(R.color.blue));
-										bt.setText(R.string.rec);
-										bt.setTextColor(getResources()
-												.getColor(R.color.white));
+										
 										bt2.setEnabled(true);
 									} else {
 										newFile.delete();
-										TextView tv = (TextView) findViewById(R.id.statusText);
-										tv.setText("Stopped");
-										tv.setTextColor(getResources().getColor(R.color.blue));
-										bt.setText(R.string.rec);
-										bt.setTextColor(getResources()
-												.getColor(R.color.white));
-										bt2.setEnabled(true);
-										named = false;
+										
 									}
 
 								}
@@ -370,14 +329,7 @@ public class VoiceRecorder extends Activity {
 															.getWindowToken(),
 													0);
 									newFile.delete();
-									TextView tv = (TextView) findViewById(R.id.statusText);
-									tv.setText("Stopped");
-									tv.setTextColor(getResources().getColor(R.color.blue));
-									bt.setText(R.string.rec);
-									bt.setTextColor(getResources().getColor(
-											R.color.white));
-									bt2.setEnabled(true);
-									named = false;
+									
 								}
 							}).show();
 
