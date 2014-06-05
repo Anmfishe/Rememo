@@ -19,7 +19,7 @@
     <string name="button_view_saved_recordings">View Saved Recordings</string>
     <string name="message_name">You must specify a recording name</string>
     <string name="emailPickerTitle">email something I think</string>
-    <string name="now_playing_prefix">now playing prefix</string>
+    <string name="now_playing_prefix">Now Playing: </string>
     <string name="rec">Record New Memo</string>
     <string name="stp">Stop Recording</string>
     

@@ -13,6 +13,7 @@
        android:layout_height="wrap_content"
        android:gravity="center"
        android:keepScreenOn="true"
+       android:textColor="@color/blue"
        android:textColorLink="@color/white"
        android:textSize="20sp" />
  

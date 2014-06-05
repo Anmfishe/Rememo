@@ -47,10 +47,10 @@ import android.widget.Toast;
 public class VoiceRecorder extends Activity {
 	private static final String TAG = VoiceRecorder.class.getName();
 	private static MediaRecorder recorder; // used to record audio
-	private static boolean recording; // are we currently recording
+	public static boolean recording; // are we currently recording
 	public static Activity activity;
-	public File tmpFile;
-	static File newFile;
+	public static File tmpFile;
+	public static File newFile;
 	AudioManager am;
 	boolean speakerON;
 	boolean notificationOn;
@@ -86,6 +86,7 @@ public class VoiceRecorder extends Activity {
 		notificationOn = true;
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		ctx = VoiceRecorder.this;
+		//newFile = getExternalFilesDir("New Memos");
 
 	}
 
@@ -353,6 +354,7 @@ public class VoiceRecorder extends Activity {
 						+ File.separator
 						+ getTime()
 						+ ".3gp");
+				//newFile.renameTo(tmpFile);
 				recorder.setOutputFile(newFile.getAbsolutePath());
 				recorder.prepare(); // prepare to record
 				recorder.start(); // start recording
@@ -460,7 +462,7 @@ public class VoiceRecorder extends Activity {
 
 		final String text = ("Rememo");
 		contentView.setTextViewText(R.id.textView, text);
-		contentView.setTextColor(R.id.textView, activity.getResources().getColor(R.color.white) );
+		contentView.setTextColor(R.id.textView, activity.getResources().getColor(R.color.blue) );
 		notification.contentView = contentView;
 		nm.notify(0, notification);
 
@@ -545,12 +547,23 @@ public class VoiceRecorder extends Activity {
 	public static class switchButtonListener extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Log.d("SWIFT", "0");
 
 			if (recording) {
+				Log.d("SWIFT", "1");
 				setNotRecording(VoiceRecorder.activity);
+
 				recorder.stop(); // stop recording
 				recorder.reset(); // reset the MediaRecorder
 				recording = false; // we are no longer recording
+				tmpFile = new File(ctx.getExternalFilesDir("New Memos")
+						.getAbsolutePath()
+						+ File.separator
+						+ getTime()
+						+ ".3gp");
+				newFile.renameTo(tmpFile);
+				
+
 				if (initiated) {
 					SavedRecordings.refresh(newFile.getName());
 				}
@@ -559,6 +572,8 @@ public class VoiceRecorder extends Activity {
 				}
 
 			} else {
+				Log.d("SWIFT", "2");
+				
 				setRecording(VoiceRecorder.activity);
 
 				if (recorder == null)
@@ -569,15 +584,21 @@ public class VoiceRecorder extends Activity {
 				recorder.setAudioEncodingBitRate(96000);
 				recorder.setAudioSamplingRate(44100);
 				try {
-					newFile = new File(context.getExternalFilesDir("New Memos")
+					
+					
+					newFile = new File(ctx.getExternalFilesDir("New Memos")
 							.getAbsolutePath()
 							+ File.separator
 							+ getTime()
 							+ ".3gp");
+
+
+					//newFile.renameTo(tmpFile);
 					recorder.setOutputFile(newFile.getAbsolutePath());
 					recorder.prepare(); // prepare to record
 					recorder.start(); // start recording
 					recording = true; // we are currently recording
+
 
 				} catch (IllegalStateException e) {
 					Log.e(TAG, e.toString());
@@ -586,6 +607,13 @@ public class VoiceRecorder extends Activity {
 					Log.e(TAG, e.toString());
 				}
 			}
+		}
+	}
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		if(notificationOn){
+			nm.cancel(0);
 		}
 	}
 }

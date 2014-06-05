@@ -59,7 +59,7 @@ public class SavedRecordings extends ListActivity {
 	private Handler handler; // updates the SeekBar thumb position
 	private TextView nowPlayingTextView; // displays audio name
 	private ToggleButton playPauseButton; // displays audio name
-	static ListView listView;
+	public static ListView listView;
 	ListView lv;
 	Bundle extra;
 	static String location = null;
@@ -559,8 +559,15 @@ public class SavedRecordings extends ListActivity {
 	}
 	public static void refresh(String s){
 		if(location.equals("New Memos")){
-		savedRecordingsAdapter.add(s);
-		savedRecordingsAdapter.notifyDataSetChanged();
+			savedRecordingsAdapter.clear();
+			File f = new File(context.getExternalFilesDir(null),
+					"New Memos");
+			String[] children = f.list();
+			int i;
+			for (i = 0; i < children.length; i++) {
+				savedRecordingsAdapter.add(children[i]);
+			}
+			savedRecordingsAdapter.notifyDataSetChanged();
 		}
 		
 	}
