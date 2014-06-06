@@ -8,10 +8,12 @@ package ucsc.lmcghee.rememo;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+
+
+
 
 
 import ucsc.lmcghee.rememo.R.color;
@@ -25,16 +27,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -51,6 +54,7 @@ public class VoiceRecorder extends Activity {
 	public static Activity activity;
 	public static File tmpFile;
 	public static File newFile;
+	public static int bitRate;
 	AudioManager am;
 	boolean speakerON;
 	boolean notificationOn;
@@ -86,6 +90,7 @@ public class VoiceRecorder extends Activity {
 		notificationOn = true;
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		ctx = VoiceRecorder.this;
+		bitRate = 96000;
 		//newFile = getExternalFilesDir("New Memos");
 
 	}
@@ -380,7 +385,7 @@ public class VoiceRecorder extends Activity {
 		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-		recorder.setAudioEncodingBitRate(96000);
+		recorder.setAudioEncodingBitRate(bitRate);
 		recorder.setAudioSamplingRate(44100);
 
 	}
@@ -547,10 +552,10 @@ public class VoiceRecorder extends Activity {
 	public static class switchButtonListener extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("SWIFT", "0");
+			Log.d("SWIFT", "ok");
 
 			if (recording) {
-				Log.d("SWIFT", "1");
+
 				setNotRecording(VoiceRecorder.activity);
 
 				recorder.stop(); // stop recording
@@ -563,6 +568,7 @@ public class VoiceRecorder extends Activity {
 						+ ".3gp");
 				newFile.renameTo(tmpFile);
 				
+				
 
 				if (initiated) {
 					SavedRecordings.refresh(newFile.getName());
@@ -572,7 +578,7 @@ public class VoiceRecorder extends Activity {
 				}
 
 			} else {
-				Log.d("SWIFT", "2");
+
 				
 				setRecording(VoiceRecorder.activity);
 
@@ -581,7 +587,7 @@ public class VoiceRecorder extends Activity {
 				recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-				recorder.setAudioEncodingBitRate(96000);
+				recorder.setAudioEncodingBitRate(bitRate);
 				recorder.setAudioSamplingRate(44100);
 				try {
 					
@@ -615,5 +621,28 @@ public class VoiceRecorder extends Activity {
 		if(notificationOn){
 			nm.cancel(0);
 		}
+	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main_menu, menu);
+	    return true;
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.low:
+	        	bitRate = 24000;
+	            return true;
+	        case R.id.med:
+	        	bitRate = 48000;
+	            return true;
+	        case R.id.high:
+	        	bitRate = 96000;
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

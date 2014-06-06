@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ucsc.lmcghee.rememo.VoiceRecordings" >
+
+    <item android:id="@+id/quality"
+ 
+		android:title="Recording Quality" >
+		<menu>
+		    	<item android:id="@+id/low"
+		    	    android:title="Low"/>
+		    	<item android:id="@+id/med"
+		    	    android:title="Medium"/>
+		    	<item android:id="@+id/high"
+		    	    android:title="High"/>
+		</menu>
+</item>
+ 
+
+
+</menu>

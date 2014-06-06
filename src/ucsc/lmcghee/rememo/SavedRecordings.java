@@ -77,6 +77,7 @@ public class SavedRecordings extends ListActivity {
 		context = SavedRecordings.this;
 		if (extra != null) {
 			location = extra.getString("KEY");
+			
 		}
 
 
@@ -96,6 +97,7 @@ public class SavedRecordings extends ListActivity {
 		nowPlayingTextView = (TextView) findViewById(R.id.nowPlayingTextView);
 
 		VoiceRecorder.initiate();
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 	} // end method onCreate
 
