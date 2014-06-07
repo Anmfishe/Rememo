@@ -12,10 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
-
-
-
-
 import ucsc.lmcghee.rememo.R.color;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -32,6 +28,9 @@ import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +54,7 @@ public class VoiceRecorder extends Activity {
 	public static File tmpFile;
 	public static File newFile;
 	public static int bitRate;
+	public static String speechString;
 	AudioManager am;
 	boolean speakerON;
 	boolean notificationOn;
@@ -77,6 +77,10 @@ public class VoiceRecorder extends Activity {
 	static Notification notification;
 	static NotificationManager nm;
 	static RemoteViews contentView;
+	public static SpeechRecognizer sr;
+	byte[] sig;
+	int sigPos;
+	TextView mText;
 	String name;
 
 	@Override
@@ -91,7 +95,10 @@ public class VoiceRecorder extends Activity {
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		ctx = VoiceRecorder.this;
 		bitRate = 96000;
-		//newFile = getExternalFilesDir("New Memos");
+		speechString = "Uninitialized";
+		sr = SpeechRecognizer.createSpeechRecognizer(this);       
+        sr.setRecognitionListener(new listener());
+		// newFile = getExternalFilesDir("New Memos");
 
 	}
 
@@ -113,7 +120,8 @@ public class VoiceRecorder extends Activity {
 			if (notificationOn) {
 				final String text = ("Rememo");
 				contentView.setTextViewText(R.id.textView, text);
-				contentView.setTextColor(R.id.textView, getResources().getColor(R.color.blue));
+				contentView.setTextColor(R.id.textView, getResources()
+						.getColor(R.color.blue));
 				notification.contentView = contentView;
 				nm.notify(0, notification);
 			}
@@ -122,8 +130,7 @@ public class VoiceRecorder extends Activity {
 			tv.setText("Stopped");
 			tv.setTextColor(getResources().getColor(R.color.blue));
 			bt.setText(R.string.rec);
-			bt.setTextColor(getResources()
-					.getColor(R.color.white));
+			bt.setTextColor(getResources().getColor(R.color.white));
 			bt2.setEnabled(true);
 		}
 	}
@@ -135,7 +142,7 @@ public class VoiceRecorder extends Activity {
 	public static void initiate2() {
 		initiated2 = true;
 	}
-	
+
 	public void startStop(View v) {
 
 		v2 = v;
@@ -144,7 +151,8 @@ public class VoiceRecorder extends Activity {
 			if (notificationOn) {
 				final String text = ("Rememo");
 				contentView.setTextViewText(R.id.textView, text);
-				contentView.setTextColor(R.id.textView, getResources().getColor(R.color.blue));
+				contentView.setTextColor(R.id.textView, getResources()
+						.getColor(R.color.blue));
 				notification.contentView = contentView;
 				nm.notify(0, notification);
 			}
@@ -152,14 +160,11 @@ public class VoiceRecorder extends Activity {
 			tv.setText("Stopped");
 			tv.setTextColor(getResources().getColor(R.color.blue));
 			bt.setText(R.string.rec);
-			bt.setTextColor(getResources()
-					.getColor(
-							R.color.white));
+			bt.setTextColor(getResources().getColor(R.color.white));
 			bt2.setEnabled(true);
-			
-
 
 			final EditText nameEditText = new EditText(VoiceRecorder.this);
+			nameEditText.setText(speechString);
 			nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 			((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 					.toggleSoftInput(InputMethodManager.SHOW_FORCED,
@@ -203,7 +208,7 @@ public class VoiceRecorder extends Activity {
 															int whichButton) {
 
 														newFile.delete();
-														
+
 													}
 												});
 										builder.setItems(
@@ -216,9 +221,9 @@ public class VoiceRecorder extends Activity {
 
 														if (temp.equals("Create New Category")) {
 
-
 															final EditText nameEditText = new EditText(
 																	VoiceRecorder.this);
+															nameEditText.setText(speechString);
 															nameEditText
 																	.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
@@ -263,7 +268,6 @@ public class VoiceRecorder extends Activity {
 																										+ name
 																										+ ".amr");
 																						newFile.renameTo(tmpFile);
-																						
 
 																					} else {
 																						((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
@@ -272,7 +276,6 @@ public class VoiceRecorder extends Activity {
 																												.getWindowToken(),
 																										0);
 																						newFile.delete();
-																						
 
 																					}
 																				}
@@ -291,7 +294,7 @@ public class VoiceRecorder extends Activity {
 																											.getWindowToken(),
 																									0);
 																					newFile.delete();
-																					
+
 																				}
 																			})
 																	.show();
@@ -306,7 +309,7 @@ public class VoiceRecorder extends Activity {
 																				+ name
 																				+ ".amr");
 																newFile.renameTo(tmpFile);
-																
+
 															} catch (IllegalStateException e) {
 																Log.e(TAG,
 																		e.toString());
@@ -316,11 +319,10 @@ public class VoiceRecorder extends Activity {
 													}
 												}).show();
 
-										
 										bt2.setEnabled(true);
 									} else {
 										newFile.delete();
-										
+
 									}
 
 								}
@@ -335,7 +337,7 @@ public class VoiceRecorder extends Activity {
 															.getWindowToken(),
 													0);
 									newFile.delete();
-									
+
 								}
 							}).show();
 
@@ -349,6 +351,7 @@ public class VoiceRecorder extends Activity {
 				notification.contentView = contentView;
 				nm.notify(0, notification);
 			}
+			startSpeech(v2);
 			startRecording(v2);
 			bt.setText(R.string.stp);
 			bt.setTextColor(getResources().getColor(R.color.red));
@@ -359,21 +362,22 @@ public class VoiceRecorder extends Activity {
 						+ File.separator
 						+ getTime()
 						+ ".amr");
-				//newFile.renameTo(tmpFile);
-				recorder.setOutputFile(newFile.getAbsolutePath());
-				recorder.prepare(); // prepare to record
-				recorder.start(); // start recording
-				recording = true; // we are currently recording
+				 //newFile.renameTo(tmpFile);
+				//recorder.setOutputFile(newFile.getAbsolutePath());
+				//recorder.prepare(); // prepare to record
+				//recorder.start(); // start recording
+				//recording = true; // we are currently recording
 				TextView tv = (TextView) findViewById(R.id.statusText);
 				tv.setText("Recording");
 				tv.setTextColor(getResources().getColor(R.color.red));
 
+
 			} catch (IllegalStateException e) {
 				Log.e(TAG, e.toString());
 			} // end catch
-			catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}
+			//catch (IOException e) {
+				//Log.e(TAG, e.toString());
+			//}
 		}
 
 	}
@@ -467,7 +471,8 @@ public class VoiceRecorder extends Activity {
 
 		final String text = ("Rememo");
 		contentView.setTextViewText(R.id.textView, text);
-		contentView.setTextColor(R.id.textView, activity.getResources().getColor(R.color.blue) );
+		contentView.setTextColor(R.id.textView, activity.getResources()
+				.getColor(R.color.blue));
 		notification.contentView = contentView;
 		nm.notify(0, notification);
 
@@ -478,7 +483,7 @@ public class VoiceRecorder extends Activity {
 		b3.setEnabled(true);
 		TextView tv = (TextView) activity.findViewById(R.id.statusText);
 		tv.setText("Stopped");
-		
+
 		tv.setTextColor(activity.getResources().getColor(R.color.blue));
 		Toast toast = Toast.makeText(ctx, "Saved to New Memos",
 				Toast.LENGTH_SHORT);
@@ -493,7 +498,7 @@ public class VoiceRecorder extends Activity {
 		contentView.setTextColor(R.id.textView, Color.RED);
 		notification.contentView = contentView;
 		nm.notify(0, notification);
- 
+
 		Button b2 = (Button) activity.findViewById(R.id.recordButton);
 		b2.setText(R.string.stp);
 		b2.setTextColor(activity.getResources().getColor(R.color.red));
@@ -567,8 +572,6 @@ public class VoiceRecorder extends Activity {
 						+ getTime()
 						+ ".amr");
 				newFile.renameTo(tmpFile);
-				
-				
 
 				if (initiated) {
 					SavedRecordings.refresh(newFile.getName());
@@ -579,7 +582,6 @@ public class VoiceRecorder extends Activity {
 
 			} else {
 
-				
 				setRecording(VoiceRecorder.activity);
 
 				if (recorder == null)
@@ -590,21 +592,19 @@ public class VoiceRecorder extends Activity {
 				recorder.setAudioEncodingBitRate(bitRate);
 				recorder.setAudioSamplingRate(44100);
 				try {
-					
-					
+
 					newFile = new File(ctx.getExternalFilesDir("New Memos")
 							.getAbsolutePath()
 							+ File.separator
 							+ getTime()
 							+ ".amr");
 
-
-					//newFile.renameTo(tmpFile);
+					// newFile.renameTo(tmpFile);
 					recorder.setOutputFile(newFile.getAbsolutePath());
 					recorder.prepare(); // prepare to record
 					recorder.start(); // start recording
 					recording = true; // we are currently recording
-
+					//startSpeech();
 
 				} catch (IllegalStateException e) {
 					Log.e(TAG, e.toString());
@@ -615,34 +615,126 @@ public class VoiceRecorder extends Activity {
 			}
 		}
 	}
+
 	@Override
-	public void onDestroy(){
+	public void onDestroy() {
 		super.onDestroy();
-		if(notificationOn){
+		if (notificationOn) {
 			nm.cancel(0);
 		}
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.main_menu, menu);
-	    return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return true;
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.low:
-	        	bitRate = 24000;
-	            return true;
-	        case R.id.med:
-	        	bitRate = 48000;
-	            return true;
-	        case R.id.high:
-	        	bitRate = 96000;
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.low:
+			bitRate = 24000;
+			return true;
+		case R.id.med:
+			bitRate = 48000;
+			return true;
+		case R.id.high:
+			bitRate = 96000;
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	class listener implements RecognitionListener {
+
+		@Override
+		public void onBeginningOfSpeech() {
+			// TODO Auto-generated method stub
+			Log.d("SPEECH", "onBeginSpeech");
+
+		}
+
+		@Override
+		public void onBufferReceived(byte[] buffer) {
+			// TODO Auto-generated method stub
+			Log.d("SPEECH", "buffRecv");
+			sig = new byte[500000];
+			
+			System.arraycopy(buffer, 0, sig, sigPos, buffer.length) ;
+			  sigPos += buffer.length ;
+			
+
+		}
+
+		@Override
+		public void onEndOfSpeech() {
+			// TODO Auto-generated method stub
+			Log.d("SPEECH", "endSpeech");
+
+		}
+
+		@Override
+		public void onError(int error) {
+			// TODO Auto-generated method stub
+			Log.d("SPEECH",  "error " +  error);
+
+		}
+
+		@Override
+		public void onEvent(int arg0, Bundle arg1) {
+			// TODO Auto-generated method stub
+			//Log.d("SPEECH", "onEvent");
+
+		}
+
+		@Override
+		public void onPartialResults(Bundle arg0) {
+			// TODO Auto-generated method stub
+			//Log.d("SPEECH", "onpartial");
+
+		}
+
+		@Override
+		public void onReadyForSpeech(Bundle arg0) {
+			// TODO Auto-generated method stub
+			Log.d("SPEECH", "onReadyForSpeech");
+
+		}
+
+		@Override
+		public void onResults(Bundle results) {
+			// TODO Auto-generated method stub
+			String str = new String();
+			Log.d("SPEECH", "onResults " + results);
+			ArrayList<String> data = results
+					.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+			for (int i = 0; i < data.size(); i++) {
+				Log.d("SPEECH", "result " + data.get(i));
+				str += data.get(i);
+			}
+			speechString = str;
+
+
+		}
+
+		@Override
+		public void onRmsChanged(float arg0) {
+			// TODO Auto-generated method stub
+			//Log.d("SPEECH", "onRmsChanged");
+
+		}
+	}
+	public static void startSpeech(View v) {
+
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);        
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,ctx.getPackageName());
+
+            //intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1); 
+                 sr.startListening(intent);
 	}
 }
