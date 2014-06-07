@@ -557,7 +557,7 @@ public class SavedRecordings extends ListActivity {
 			Uri uri = Uri.fromFile(f2);
 			Intent k=new Intent(android.content.Intent.ACTION_SEND);
 			k.setType("audio/amr");
-			k.putExtra(android.content.Intent.EXTRA_TEXT, "extra text that you want to put");
+			k.putExtra(android.content.Intent.EXTRA_TEXT, "Recorded from Rememo!");
 			k.putExtra(Intent.EXTRA_STREAM, uri);
 			startActivity(Intent.createChooser(k,"Share via"));
 			return true;
