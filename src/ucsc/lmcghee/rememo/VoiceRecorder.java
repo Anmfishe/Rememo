@@ -261,7 +261,7 @@ public class VoiceRecorder extends Activity {
 																										.getAbsolutePath()
 																										+ File.separator
 																										+ name
-																										+ ".3gp");
+																										+ ".amr");
 																						newFile.renameTo(tmpFile);
 																						
 
@@ -304,7 +304,7 @@ public class VoiceRecorder extends Activity {
 																				.getAbsolutePath()
 																				+ File.separator
 																				+ name
-																				+ ".3gp");
+																				+ ".amr");
 																newFile.renameTo(tmpFile);
 																
 															} catch (IllegalStateException e) {
@@ -358,7 +358,7 @@ public class VoiceRecorder extends Activity {
 						.getAbsolutePath()
 						+ File.separator
 						+ getTime()
-						+ ".3gp");
+						+ ".amr");
 				//newFile.renameTo(tmpFile);
 				recorder.setOutputFile(newFile.getAbsolutePath());
 				recorder.prepare(); // prepare to record
@@ -383,7 +383,7 @@ public class VoiceRecorder extends Activity {
 		if (recorder == null)
 			recorder = new MediaRecorder(); // create MediaRecorder
 		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 		recorder.setAudioEncodingBitRate(bitRate);
 		recorder.setAudioSamplingRate(44100);
@@ -565,7 +565,7 @@ public class VoiceRecorder extends Activity {
 						.getAbsolutePath()
 						+ File.separator
 						+ getTime()
-						+ ".3gp");
+						+ ".amr");
 				newFile.renameTo(tmpFile);
 				
 				
@@ -585,7 +585,7 @@ public class VoiceRecorder extends Activity {
 				if (recorder == null)
 					recorder = new MediaRecorder(); // create MediaRecorder
 				recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+				recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 				recorder.setAudioEncodingBitRate(bitRate);
 				recorder.setAudioSamplingRate(44100);
@@ -596,7 +596,7 @@ public class VoiceRecorder extends Activity {
 							.getAbsolutePath()
 							+ File.separator
 							+ getTime()
-							+ ".3gp");
+							+ ".amr");
 
 
 					//newFile.renameTo(tmpFile);

@@ -351,7 +351,7 @@ public class SavedRecordings extends ListActivity {
 										File fto = new File(
 												SavedRecordings.this
 														.getExternalFilesDir(location),
-												value + ".3gp");
+												value + ".amr");
 
 										ffrom.renameTo(fto);
 										// fto.delete();
@@ -549,6 +549,17 @@ public class SavedRecordings extends ListActivity {
 			AlertDialog alert = builder.create();
 			alert.show();
 
+			return true;
+		case R.id.share:
+			int j = (int) info.id;
+			String temp2 = listView.getItemAtPosition(j).toString();
+			File f2 = new File(getExternalFilesDir(location) + "/" + temp2);
+			Uri uri = Uri.fromFile(f2);
+			Intent k=new Intent(android.content.Intent.ACTION_SEND);
+			k.setType("audio/amr");
+			k.putExtra(android.content.Intent.EXTRA_TEXT, "extra text that you want to put");
+			k.putExtra(Intent.EXTRA_STREAM, uri);
+			startActivity(Intent.createChooser(k,"Share via"));
 			return true;
 		default:
 			return super.onContextItemSelected(item);
