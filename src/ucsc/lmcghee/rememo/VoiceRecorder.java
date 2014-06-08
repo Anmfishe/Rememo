@@ -46,43 +46,35 @@ import android.widget.EditText;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
-
+//This class does all the things on the main screen as well as handles the notification
 public class VoiceRecorder extends Activity {
 	private static final String TAG = VoiceRecorder.class.getName();
 	private static MediaRecorder recorder; // used to record audio
 	public static boolean recording; // are we currently recording
-	public static Activity activity;
-	public static File tmpFile;
-	public static File newFile;
-	public static int bitRate;
-	AudioManager am;
-	boolean speakerON;
-	boolean notificationOn;
-	static boolean initiated;
-	static boolean initiated2;
-	static boolean named;
-	Button bt;
+	public static Activity activity; //need a static activity
+	public static File tmpFile; //used to make new correct path
+	public static File newFile; //used to make output file
+	public static int bitRate; //var to save quality
+	boolean notificationOn; //see if notification is on
+	static boolean initiated; //important for calling functions to other activities
+	static boolean initiated2; //same
+	Button bt; //references to out on screen buttons
 	Button bt2;
-	static Button bt3;
-	View v2;
+	View v2; //View references we pass in to other functions
 	View v3;
-	Thread myThread;
-	static TextView textView;
-	static Context ctx;
-	ViewGroup root;
-	LayoutInflater inflater;
-	AudioManager audioManager;
-	Boolean helper;
-	static Intent service;
-	static Notification notification;
-	static NotificationManager nm;
-	static RemoteViews contentView;
-	String name;
+	static Context ctx; //our context reference
+	LayoutInflater inflater; //to inflate things
+	Boolean helper; //spaghetti
+	static Notification notification; //our notification
+	static NotificationManager nm; //the manager
+	static RemoteViews contentView; //the notification view
+	String name; //The name of a file we clicked on
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		//initialize everything
 		activity = this;
 		bt = (Button) findViewById(R.id.recordButton);
 		bt2 = (Button) findViewById(R.id.viewSaved);
@@ -91,7 +83,6 @@ public class VoiceRecorder extends Activity {
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		ctx = VoiceRecorder.this;
 		bitRate = 96000;
-		//newFile = getExternalFilesDir("New Memos");
 
 	}
 
@@ -111,6 +102,7 @@ public class VoiceRecorder extends Activity {
 
 			recorder = null;
 			if (notificationOn) {
+				//Change the notification to stopped
 				final String text = ("Rememo");
 				contentView.setTextViewText(R.id.textView, text);
 				contentView.setTextColor(R.id.textView, getResources().getColor(R.color.blue));
@@ -118,6 +110,7 @@ public class VoiceRecorder extends Activity {
 				nm.notify(0, notification);
 			}
 			newFile.delete();
+			//Change the buttons to stopped
 			TextView tv = (TextView) findViewById(R.id.statusText);
 			tv.setText("Stopped");
 			tv.setTextColor(getResources().getColor(R.color.blue));
@@ -128,7 +121,7 @@ public class VoiceRecorder extends Activity {
 		}
 	}
 
-	public static void initiate() {
+	public static void initiate() { //These help with seeing if an activity has been started yet
 		initiated = true;
 	}
 
@@ -136,10 +129,11 @@ public class VoiceRecorder extends Activity {
 		initiated2 = true;
 	}
 	
-	public void startStop(View v) {
+	public void startStop(View v) { //Our start stop recording button
 
 		v2 = v;
 		if (recording) {
+			//If we are, stop recording and set all the text back
 			stopRecording(v);
 			if (notificationOn) {
 				final String text = ("Rememo");
@@ -158,14 +152,14 @@ public class VoiceRecorder extends Activity {
 			bt2.setEnabled(true);
 			
 
-
+			//The edit text we inflate for the name
 			final EditText nameEditText = new EditText(VoiceRecorder.this);
 			nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 			((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 					.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-							InputMethodManager.HIDE_IMPLICIT_ONLY);
+							InputMethodManager.HIDE_IMPLICIT_ONLY);//forces keyboard to come up
 
-			new AlertDialog.Builder(VoiceRecorder.this)
+			new AlertDialog.Builder(VoiceRecorder.this)//set the builder, define OK and Cancel buttons
 					.setTitle("Name")
 					.setView(nameEditText)
 					.setPositiveButton("Ok",
@@ -176,11 +170,13 @@ public class VoiceRecorder extends Activity {
 											.hideSoftInputFromWindow(
 													nameEditText
 															.getWindowToken(),
-													0);
-
+													0); //this the keyboard on OK
+									
 									String value = nameEditText.getText()
 											.toString().trim();
+									//Get the name they input
 									if (value.length() != 0) {
+										//if not no response
 										name = value;
 										ArrayList<String> values2 = new ArrayList<String>(
 												Arrays.asList(VoiceRecorder.this
@@ -191,7 +187,7 @@ public class VoiceRecorder extends Activity {
 										final CharSequence[] cs = values2
 												.toArray(new CharSequence[values2
 														.size()]);
-
+										//Save the name and inflate all the categories in getExternalFilesDir(null)
 										AlertDialog.Builder builder = new AlertDialog.Builder(
 												ctx);
 										builder.setTitle("Make your selection");
@@ -212,11 +208,12 @@ public class VoiceRecorder extends Activity {
 													public void onClick(
 															DialogInterface dialog,
 															int item) {
+														//The onclick for all the items in the next alert
 														String temp = (String) cs[item];
 
 														if (temp.equals("Create New Category")) {
 
-
+															//If new category was choosen inflate one more editView to get a new category name
 															final EditText nameEditText = new EditText(
 																	VoiceRecorder.this);
 															nameEditText
@@ -227,11 +224,7 @@ public class VoiceRecorder extends Activity {
 																			InputMethodManager.SHOW_FORCED,
 																			InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-															// create an input
-															// dialog to get
-															// recording name
-															// from
-															// user
+
 															new AlertDialog.Builder(
 																	VoiceRecorder.this)
 																	.setTitle(
@@ -255,6 +248,8 @@ public class VoiceRecorder extends Activity {
 																										nameEditText
 																												.getWindowToken(),
 																										0);
+																						//The tmp File is the actual representation of where we want to save
+																						//newFile contains the actual sound file which has finished recording
 																						tmpFile = new File(
 																								getExternalFilesDir(
 																										value)
@@ -266,6 +261,7 @@ public class VoiceRecorder extends Activity {
 																						
 
 																					} else {
+																						//if no input
 																						((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 																								.hideSoftInputFromWindow(
 																										nameEditText
@@ -280,11 +276,11 @@ public class VoiceRecorder extends Activity {
 																	.setNegativeButton(
 																			"Cancel",
 																			new DialogInterface.OnClickListener() {
+																			
 																				public void onClick(
 																						DialogInterface dialog,
 																						int whichButton) {
-																					// Do
-																					// nothing.
+																					// Just delete new file
 																					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 																							.hideSoftInputFromWindow(
 																									nameEditText
@@ -297,7 +293,7 @@ public class VoiceRecorder extends Activity {
 																	.show();
 														} else {
 															try {
-
+																//If they just chose a category then save it there
 																tmpFile = new File(
 																		getExternalFilesDir(
 																				temp)
@@ -329,6 +325,7 @@ public class VoiceRecorder extends Activity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int whichButton) {
+									//Last negative from the first alert!
 									((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 											.hideSoftInputFromWindow(
 													nameEditText
@@ -342,14 +339,16 @@ public class VoiceRecorder extends Activity {
 		}
 
 		else {
+			//If we are not recording, then we need to start recording
 			if (notificationOn) {
+				//Change the notification to be recording
 				final String text = ("Rememoing");
 				contentView.setTextViewText(R.id.textView, text);
 				contentView.setTextColor(R.id.textView, Color.RED);
 				notification.contentView = contentView;
 				nm.notify(0, notification);
 			}
-			startRecording(v2);
+			startRecording(v2);//sets up recorder
 			bt.setText(R.string.stp);
 			bt.setTextColor(getResources().getColor(R.color.red));
 			bt2.setEnabled(false);
@@ -359,14 +358,13 @@ public class VoiceRecorder extends Activity {
 						+ File.separator
 						+ getTime()
 						+ ".amr");
-				//newFile.renameTo(tmpFile);
 				recorder.setOutputFile(newFile.getAbsolutePath());
 				recorder.prepare(); // prepare to record
 				recorder.start(); // start recording
 				recording = true; // we are currently recording
 				TextView tv = (TextView) findViewById(R.id.statusText);
 				tv.setText("Recording");
-				tv.setTextColor(getResources().getColor(R.color.red));
+				tv.setTextColor(getResources().getColor(R.color.red));//Change the rest of the buttons
 
 			} catch (IllegalStateException e) {
 				Log.e(TAG, e.toString());
@@ -378,19 +376,19 @@ public class VoiceRecorder extends Activity {
 
 	}
 
-	public void startRecording(View v) {
+	public void startRecording(View v) { //Sets up the recorder
 		Log.d("startRecording", "Start Button Pressed.");
 		if (recorder == null)
 			recorder = new MediaRecorder(); // create MediaRecorder
 		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-		recorder.setAudioEncodingBitRate(bitRate);
+		recorder.setAudioEncodingBitRate(bitRate);//at a certain bitrate
 		recorder.setAudioSamplingRate(44100);
 
 	}
 
-	public void stopRecording(View v) {
+	public void stopRecording(View v) { //Stop the recorder and reset it
 		if (!recording)
 			return;
 		recorder.stop();
@@ -398,7 +396,7 @@ public class VoiceRecorder extends Activity {
 		recording = false;
 	}
 
-	public static Boolean getRecording() {
+	public static Boolean getRecording() {//getters and setters
 		return recording;
 	}
 
@@ -414,7 +412,7 @@ public class VoiceRecorder extends Activity {
 		return recorder;
 	}
 
-	public static String getTime() {
+	public static String getTime() {//The get time function for if we name it from the notification
 		// Returns time in form of a string formatted as m-d hr:mn
 		String time = "";
 		Calendar myCalendar = Calendar.getInstance();
@@ -438,12 +436,12 @@ public class VoiceRecorder extends Activity {
 		return time;
 	}
 
-	public void viewSaved(View v) {
+	public void viewSaved(View v) {//This does something I imagine
 		Intent intent = new Intent(VoiceRecorder.this, Categories.class);
 		startActivity(intent);
 	}
 
-	public void showNotificationClicked(View v) {
+	public void showNotificationClicked(View v) {//The create and delete for our notification
 		if (notificationOn) {
 			notificationOn = false;
 			Button but = (Button) findViewById(R.id.notifbutton);
@@ -463,13 +461,13 @@ public class VoiceRecorder extends Activity {
 		notificationManager.cancel(0);
 	}
 
-	public static void setNotRecording(Activity activity) {
+	public static void setNotRecording(Activity activity) {//Set things from notification function
 
 		final String text = ("Rememo");
 		contentView.setTextViewText(R.id.textView, text);
 		contentView.setTextColor(R.id.textView, activity.getResources().getColor(R.color.blue) );
 		notification.contentView = contentView;
-		nm.notify(0, notification);
+		nm.notify(0, notification);//Set the content View 
 
 		Button b2 = (Button) activity.findViewById(R.id.recordButton);
 		b2.setText(R.string.rec);
@@ -477,12 +475,12 @@ public class VoiceRecorder extends Activity {
 		Button b3 = (Button) activity.findViewById(R.id.viewSaved);
 		b3.setEnabled(true);
 		TextView tv = (TextView) activity.findViewById(R.id.statusText);
-		tv.setText("Stopped");
+		tv.setText("Stopped");//Set the buttons within this class
 		
 		tv.setTextColor(activity.getResources().getColor(R.color.blue));
 		Toast toast = Toast.makeText(ctx, "Saved to New Memos",
 				Toast.LENGTH_SHORT);
-		toast.show();
+		toast.show();//Quick toast
 
 	}
 
@@ -492,7 +490,7 @@ public class VoiceRecorder extends Activity {
 		contentView.setTextViewText(R.id.textView, text);
 		contentView.setTextColor(R.id.textView, Color.RED);
 		notification.contentView = contentView;
-		nm.notify(0, notification);
+		nm.notify(0, notification);//Start recording text
  
 		Button b2 = (Button) activity.findViewById(R.id.recordButton);
 		b2.setText(R.string.stp);
@@ -501,11 +499,11 @@ public class VoiceRecorder extends Activity {
 		b3.setEnabled(false);
 		TextView tv = (TextView) activity.findViewById(R.id.statusText);
 		tv.setText("Recording");
-		tv.setTextColor(activity.getResources().getColor(R.color.red));
+		tv.setTextColor(activity.getResources().getColor(R.color.red));//Set the buttons
 	}
 
 	@SuppressLint("NewApi")
-	private void createNotification() {
+	private void createNotification() {//Build the notification
 		Notification.Builder builder = new Notification.Builder(this);
 
 		// Create Intent to launch this Activity again if the notification is
@@ -534,10 +532,10 @@ public class VoiceRecorder extends Activity {
 
 		final String text = ("Rememo");
 		contentView.setTextViewText(R.id.textView, text);
-
+		//This is how we set the button to listen
 		Intent buttonIntent = new Intent(this, switchButtonListener.class);
 		PendingIntent pbuttonIntent = PendingIntent.getBroadcast(this, 1,
-				buttonIntent, 0);
+				buttonIntent, 0);//use a broadcast
 		contentView.setOnClickPendingIntent(R.id.imageButton1, pbuttonIntent);
 
 		notification.contentView = contentView;
@@ -552,7 +550,8 @@ public class VoiceRecorder extends Activity {
 	public static class switchButtonListener extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("SWIFT", "ok");
+			//Our receiver
+			//Decides what to do depending on if we are recording
 
 			if (recording) {
 
@@ -572,6 +571,7 @@ public class VoiceRecorder extends Activity {
 
 				if (initiated) {
 					SavedRecordings.refresh(newFile.getName());
+					//Referesh the other screens if they were initialized
 				}
 				if (initiated2) {
 					Categories.refresh();
@@ -588,7 +588,7 @@ public class VoiceRecorder extends Activity {
 				recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 				recorder.setAudioEncodingBitRate(bitRate);
-				recorder.setAudioSamplingRate(44100);
+				recorder.setAudioSamplingRate(44100); //Start recording
 				try {
 					
 					
@@ -618,12 +618,14 @@ public class VoiceRecorder extends Activity {
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
+		//Destroy our notification onDestroy
 		if(notificationOn){
 			nm.cancel(0);
 		}
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		//My custom options bring all the boys to the yard
 	    MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.main_menu, menu);
 	    return true;
@@ -631,6 +633,7 @@ public class VoiceRecorder extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
+		// Sets bitrates
 	    switch (item.getItemId()) {
 	        case R.id.low:
 	        	bitRate = 24000;
@@ -645,4 +648,4 @@ public class VoiceRecorder extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-}
+}//done

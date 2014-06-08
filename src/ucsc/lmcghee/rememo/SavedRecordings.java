@@ -64,6 +64,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class SavedRecordings extends ListActivity {
+	//ALOT OF THE PLAYBACK WAS FROM AN ONLINE TUTORIAL
 	private static final String TAG = SavedRecordings.class.getName();
 
 	// SavedRecordingsAdapter displays list of saved recordings in ListView
@@ -74,15 +75,14 @@ public class SavedRecordings extends ListActivity {
 	private Handler handler; // updates the SeekBar thumb position
 	private TextView nowPlayingTextView; // displays audio name
 	private ToggleButton playPauseButton; // displays audio name
-	public static ListView listView;
-	DatePicker dp;
-	ListView lv;
-	Bundle extra;
-	static String location = null;
-	ArrayAdapter<String> adapter;
+	public static ListView listView; //The lv we use
+
+	ListView lv; //Like an extra one because reasons
+	Bundle extra; //How we get the string from the last activity
+	static String location = null; //location
 	int i;
-	static int bID;
-	int day, month, hour, mMinute, mYear;
+	static int bID;//ID of the notifications we make
+	int day, month, hour, mMinute, mYear;//The day month and year shtuff
 
 	static Context context;
 
@@ -96,18 +96,18 @@ public class SavedRecordings extends ListActivity {
 		if (extra != null) {
 			location = extra.getString("KEY");
 
-		}
+		}//Get the file location
 
 		listView = getListView();
 		savedRecordingsAdapter = new SavedRecordingsAdapter(this,
 				new ArrayList<String>(Arrays.asList(getExternalFilesDir(
-						location).list())));
+						location).list())));//Now we are looking in getExternalFilesDir(location)
 		listView.setAdapter(savedRecordingsAdapter);
 		registerForContextMenu(listView);
 
 		handler = new Handler(); // updates SeekBar thumb position
 
-		progressSeekBar = (SeekBar) findViewById(R.id.progressSeekBar);
+		progressSeekBar = (SeekBar) findViewById(R.id.progressSeekBar);//Set the button
 		progressSeekBar.setOnSeekBarChangeListener(progressChangeListener);
 		playPauseButton = (ToggleButton) findViewById(R.id.playPauseButton);
 		playPauseButton.setOnCheckedChangeListener(playPauseButtonListener);
@@ -115,7 +115,7 @@ public class SavedRecordings extends ListActivity {
 
 		VoiceRecorder.initiate();
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		bID = 0;
+		bID = 1; //one because 0 is our main notification
 
 	} // end method onCreate
 
@@ -184,53 +184,11 @@ public class SavedRecordings extends ListActivity {
 		} // end method getView
 	} // end class SavedRecordingsAdapter
 
-	// sends specified recording as email attachment
-	OnClickListener emailButtonListener = new OnClickListener() {
-		@Override
-		public void onClick(final View v) {
-			// get Uri to the recording's location on disk
-			Uri data = Uri.fromFile(new File(getExternalFilesDir(null),
-					(String) v.getTag()));
-
-			// create Intent to send Email
-			Intent intent = new Intent(Intent.ACTION_SEND);
-			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_STREAM, data);
-			startActivity(Intent.createChooser(intent, getResources()
-					.getString(R.string.emailPickerTitle)));
-		} // end method onClick
-	}; // end OnClickListener
-
-	// deletes the specified recording
-	OnClickListener deleteButtonListener = new OnClickListener() {
-		@Override
-		public void onClick(final View v) {
-			// create an input dialog to get recording name from user
-			AlertDialog.Builder confirmDialog = new AlertDialog.Builder(
-					SavedRecordings.this);
-			confirmDialog.setTitle(R.string.dialog_confirm_title);
-			confirmDialog.setMessage(R.string.dialog_confirm_message);
-
-			confirmDialog.setPositiveButton(R.string.button_delete,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							File fileToDelete = new File(
-									getExternalFilesDir(null) + File.separator
-											+ (String) v.getTag());
-							fileToDelete.delete();
-							savedRecordingsAdapter.remove((String) v.getTag());
-						} // end method onClick
-					} // end anonymous inner class
-					); // end call to setPositiveButton
-
-			confirmDialog.setNegativeButton(R.string.button_cancel, null);
-			confirmDialog.show();
-		} // end method onClick
-	}; // end OnClickListener
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+		//What to do onClick
 		playPauseButton.setChecked(true); // checked state
 		handler.removeCallbacks(updater); // stop updating progressSeekBar
 
@@ -320,6 +278,7 @@ public class SavedRecordings extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
+		//Create our context menu
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.context_menu, menu);
@@ -332,11 +291,9 @@ public class SavedRecordings extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.edit:
 			i = (int) info.id;
-
-			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View v1 = inflater.inflate(R.layout.name_edittext, null);
+			//If edit
 			final EditText nameEditText = new EditText(SavedRecordings.this);
-			nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+			nameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);//Inflate a new textView
 			((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 					.toggleSoftInput(InputMethodManager.SHOW_FORCED,
 							InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -356,21 +313,23 @@ public class SavedRecordings extends ListActivity {
 													0);
 									String value = nameEditText.getText()
 											.toString().trim();
+									//Get the string
 									if (value.length() != 0) {
 										String from = listView
 												.getItemAtPosition(i)
 												.toString();
 										String to = value;
+										//Original File
 										File ffrom = new File(
 												SavedRecordings.this
 														.getExternalFilesDir(location),
 												from);
-
+										//Rename shtuff
 										File fto = new File(
 												SavedRecordings.this
 														.getExternalFilesDir(location),
 												value + ".amr");
-
+										//New file
 										ffrom.renameTo(fto);
 										// fto.delete();
 										savedRecordingsAdapter = new SavedRecordingsAdapter(
@@ -381,6 +340,7 @@ public class SavedRecordings extends ListActivity {
 																		location)
 																.list())));
 										listView.setAdapter(savedRecordingsAdapter);
+										//Reset the Adapter
 									} else {
 
 									}
@@ -403,27 +363,25 @@ public class SavedRecordings extends ListActivity {
 		case R.id.delete:
 			String temp = listView.getItemAtPosition((int) info.id).toString();
 			savedRecordingsAdapter.remove(temp);
-			savedRecordingsAdapter.notifyDataSetChanged();
+			savedRecordingsAdapter.notifyDataSetChanged();//Notify change
 			File f = new File(
 					SavedRecordings.this.getExternalFilesDir(location), temp);
-			boolean h = f.delete();
-			if (h) {
-				Log.d("WHAT", "deleted");
-			}
+			boolean h = f.delete();//Delete it
 			return true;
 		case R.id.move:
+			//if Move
 			i = (int) info.id;
 
 			ArrayList<String> values2 = new ArrayList<String>(
 					Arrays.asList(SavedRecordings.this
-							.getExternalFilesDir(null).list()));
+							.getExternalFilesDir(null).list()));//Values of our categories screen
 			String create = "Create New Category";
 			values2.add(create);
 			final CharSequence[] cs = values2.toArray(new CharSequence[values2
 					.size()]);
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Make your selection");
+			builder.setTitle("Make your selection");//Inflate Categories screen
 			builder.setNegativeButton("Cancel",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
@@ -437,7 +395,8 @@ public class SavedRecordings extends ListActivity {
 					if (temp.equals(location)) {
 
 					} else if (temp.equals("Create New Category")) {
-
+						//If create new inflate a textView and let them name it
+						//Then save the file to that location
 						LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 						View v1 = inflater
 								.inflate(R.layout.name_edittext, null);
@@ -467,7 +426,7 @@ public class SavedRecordings extends ListActivity {
 														.getText().toString()
 														.trim();
 												if (value.length() != 0) {
-
+													//We have done this like 1000 times now
 													String temperino = listView
 															.getItemAtPosition(
 																	i)
@@ -479,6 +438,7 @@ public class SavedRecordings extends ListActivity {
 															.getExternalFilesDir(value)
 															+ "/" + temperino;
 													try {
+														//We have to do an in out stream because a rename does not work here
 														InputStream in2 = new FileInputStream(
 																source2);
 														OutputStream out2 = new FileOutputStream(
@@ -489,6 +449,7 @@ public class SavedRecordings extends ListActivity {
 
 														while ((len = in2
 																.read(buf)) > 0) {
+															//Write all the bytes
 															out2.write(buf, 0,
 																	len);
 														}
@@ -504,7 +465,7 @@ public class SavedRecordings extends ListActivity {
 													savedRecordingsAdapter
 															.remove(temperino);
 													savedRecordingsAdapter
-															.notifyDataSetChanged();
+															.notifyDataSetChanged();// Remove, notify, then delete
 													File deleteFile = new File(
 															SavedRecordings.this
 																	.getExternalFilesDir(location),
@@ -536,9 +497,11 @@ public class SavedRecordings extends ListActivity {
 								.getExternalFilesDir(location) + "/" + temp2;
 						String target = SavedRecordings.this
 								.getExternalFilesDir(temp) + "/" + temp2;
+						//2 files locations
 						try {
 							InputStream in = new FileInputStream(source);
 							OutputStream out = new FileOutputStream(target);
+							//just move it to new file location
 
 							byte[] buf = new byte[1024];
 							int len;
@@ -549,6 +512,7 @@ public class SavedRecordings extends ListActivity {
 
 							in.close();
 							out.close();
+							//Rewrite the file again
 
 						} catch (NullPointerException e) {
 							e.printStackTrace();
@@ -571,31 +535,31 @@ public class SavedRecordings extends ListActivity {
 			int j = (int) info.id;
 			String temp2 = listView.getItemAtPosition(j).toString();
 			File f2 = new File(getExternalFilesDir(location) + "/" + temp2);
-			Uri uri = Uri.fromFile(f2);
+			Uri uri = Uri.fromFile(f2);//Our file
 			Intent k = new Intent(android.content.Intent.ACTION_SEND);
 			k.setType("audio/amr");
 			k.putExtra(android.content.Intent.EXTRA_TEXT,
-					"Recorded from Rememo!");
+					"Recorded from Rememo!");//Extra text
 			k.putExtra(Intent.EXTRA_STREAM, uri);
-			startActivity(Intent.createChooser(k, "Share via"));
+			startActivity(Intent.createChooser(k, "Share via"));//Start a share intent based on amr files
+			//amr is the only file type I could find that could be texted :(
 			return true;
 		case R.id.alert:
 			i = (int) info.id;
 			String name = listView.getItemAtPosition(i).toString();
-			startAlarm(name);
+			startAlarm(name);//Call start alarm
 			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
 	}
 
-	private Dialog getActivity() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	public static void refresh(String s) {
 		if (location.equals("New Memos")) {
+			//Refresh when we finish recording from the notificaiton
+			//Only applies to new memos
 			savedRecordingsAdapter.clear();
 			File f = new File(context.getExternalFilesDir(null), "New Memos");
 			String[] children = f.list();
@@ -609,11 +573,9 @@ public class SavedRecordings extends ListActivity {
 	}
 
 	public void startAlarm(final String n) {
-
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v1 = inflater.inflate(R.layout.timedate_alert, null);
+		//The great alarm setter
 		Calendar c = Calendar.getInstance();
-		//final int id1 = id;
+		//Make a new DatePickerDialog
 		new DatePickerDialog(
 				SavedRecordings.this,
 				new DatePickerDialog.OnDateSetListener() {
@@ -621,8 +583,8 @@ public class SavedRecordings extends ListActivity {
 					@Override
 					public void onDateSet(DatePicker view, int year,
 							int monthOfYear, int dayOfMonth) {
-						Log.d("TIMER", "ok1");
-						//final int id2 = id1;
+						//On Set, set all of the values to the right vales
+
 						day = dayOfMonth;
 						Log.d("TIMER", "Day:" + day);
 						month = monthOfYear;
@@ -630,59 +592,67 @@ public class SavedRecordings extends ListActivity {
 						mYear = year;
 						Log.d("TIMER", "Year:" + mYear);
 						Calendar c = Calendar.getInstance();
+						//Then start a time Picker Dialog
 						new TimePickerDialog(SavedRecordings.this,
 								new TimePickerDialog.OnTimeSetListener() {
 
 									@Override
 									public void onTimeSet(TimePicker view,
 											int hourOfDay, int minute) {
-										//int id3 = id2;
+										//On Set set all the times to the right times
 										// TODO Auto-generated method stub
 										hour = hourOfDay;
 										Log.d("TIMER", "Hour:" + hour);
 										mMinute = minute;
 										Log.d("TIMER", "Minute:" + mMinute);
-
+										//Make alarm manager
 										AlarmManager alarmManager = (AlarmManager) SavedRecordings.this
 												.getSystemService(SavedRecordings.this.ALARM_SERVICE);
 										Calendar calendar = Calendar
 												.getInstance();
 										calendar.set(mYear, month, day, hour, mMinute, 0);
-										long when = calendar.getTimeInMillis(); // notification
-										
-										//String temp3 = listView.getItemAtPosition(id3).toString();
+										//Set a Calendar to the users input
+										long when = calendar.getTimeInMillis();
+										//Get the time of the clanedar
 
 										Intent intent = new Intent(
 												SavedRecordings.this,
 												ReminderService.class);
+										//make a new intent
 										intent.putExtra("NAME", n);
+										//save the name in the intent
 										PendingIntent pendingIntent = PendingIntent
 												.getBroadcast(
 														SavedRecordings.this,
 														bID, intent, 0);
+										//Set up a broadcast
 										alarmManager.set(AlarmManager.RTC,
 												when, pendingIntent);
 										bID++;
 										Toast toast = Toast.makeText(SavedRecordings.this, "Alert Set",
 												Toast.LENGTH_SHORT);
 										toast.show();
+										//Toast em
 
 									}
 								}, c.get(Calendar.HOUR_OF_DAY), c
-										.get(Calendar.MINUTE), false).show();
+										.get(Calendar.MINUTE), false).show();//Sets Current hour minute
 
 					}
 				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
-				c.get(Calendar.DAY_OF_MONTH)).show();
+				c.get(Calendar.DAY_OF_MONTH)).show();//Sets current month year
 
 	}
 
 	public static class ReminderService extends BroadcastReceiver {
+	
 
-
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			//The Receiver
 			String name = "Name not found";
+			//If for some reason the name was not attached
 			Bundle bb = intent.getExtras();
 			if(bb!=null){
 				name = bb.getString("NAME");
@@ -695,14 +665,13 @@ public class SavedRecordings extends ListActivity {
 			notification.defaults |= Notification.DEFAULT_SOUND;
 			notification.flags |= notification.FLAG_AUTO_CANCEL;
 			Intent notificationIntent = new Intent(context,
-					SavedRecordings.class);
-			// notificationIntent.putExtra("KEY", "General");
+					SavedRecordings.class);//Make a generic notification
 			PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
 					notificationIntent, 0);
 			notification.setLatestEventInfo(context.getApplicationContext(),
 					name, "Click to see file",
-					contentIntent);
-			nm.notify(bID, notification);
+					contentIntent);//Set the name and subText
+			nm.notify(bID, notification);//Notify
 		}
 
 	}
