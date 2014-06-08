@@ -58,6 +58,7 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -662,6 +663,9 @@ public class SavedRecordings extends ListActivity {
 										alarmManager.set(AlarmManager.RTC,
 												when, pendingIntent);
 										bID++;
+										Toast toast = Toast.makeText(SavedRecordings.this, "Alert Set",
+												Toast.LENGTH_SHORT);
+										toast.show();
 
 									}
 								}, c.get(Calendar.HOUR_OF_DAY), c
