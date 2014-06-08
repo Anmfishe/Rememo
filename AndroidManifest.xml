@@ -18,9 +18,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <receiver android:name="VoiceRecorder$switchButtonListener" />
-        <service
-            android:name=".ButtonService"
-            android:exported="false"/>
+        <receiver android:name=".SavedRecordings$ReminderService" />
+        
         <activity android:name=".VoiceRecorder" 
          	android:label="@string/app_name" 
         	android:screenOrientation="portrait">

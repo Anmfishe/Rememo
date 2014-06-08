@@ -8,12 +8,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.app.ListActivity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +34,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -39,11 +51,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -60,11 +74,14 @@ public class SavedRecordings extends ListActivity {
 	private TextView nowPlayingTextView; // displays audio name
 	private ToggleButton playPauseButton; // displays audio name
 	public static ListView listView;
+	DatePicker dp;
 	ListView lv;
 	Bundle extra;
 	static String location = null;
 	ArrayAdapter<String> adapter;
 	int i;
+	static int bID;
+	int day, month, hour, mMinute, mYear;
 
 	static Context context;
 
@@ -77,9 +94,8 @@ public class SavedRecordings extends ListActivity {
 		context = SavedRecordings.this;
 		if (extra != null) {
 			location = extra.getString("KEY");
-			
-		}
 
+		}
 
 		listView = getListView();
 		savedRecordingsAdapter = new SavedRecordingsAdapter(this,
@@ -98,6 +114,7 @@ public class SavedRecordings extends ListActivity {
 
 		VoiceRecorder.initiate();
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		bID = 0;
 
 	} // end method onCreate
 
@@ -111,7 +128,6 @@ public class SavedRecordings extends ListActivity {
 	// release the MediaPlayer object
 	@Override
 	protected void onPause() {
-		
 
 		if (mediaPlayer != null) {
 			handler.removeCallbacks(updater); // stop updating GUI
@@ -121,7 +137,6 @@ public class SavedRecordings extends ListActivity {
 		}
 		super.onPause();
 	} // end method onPause
-
 
 	private static class ViewHolder {
 		TextView nameTextView;
@@ -136,7 +151,8 @@ public class SavedRecordings extends ListActivity {
 			super(context, -1, items); // -1 indicates we're customizing view
 			Collections.sort(items, String.CASE_INSENSITIVE_ORDER);
 			this.items = items;
-			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		} // end SavedRecordingsAdapter constructor
 
 		@Override
@@ -160,7 +176,8 @@ public class SavedRecordings extends ListActivity {
 			// get and display name of recording file
 			String item = items.get(position);
 			viewHolder.nameTextView.setText(item);
-			viewHolder.nameTextView.setTextColor(getResources().getColor(R.color.purp));
+			viewHolder.nameTextView.setTextColor(getResources().getColor(
+					R.color.purp));
 
 			return convertView;
 		} // end method getView
@@ -432,7 +449,6 @@ public class SavedRecordings extends ListActivity {
 										InputMethodManager.SHOW_FORCED,
 										InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-
 						new AlertDialog.Builder(SavedRecordings.this)
 								.setTitle("Create New Category")
 								.setView(nameEditText)
@@ -555,11 +571,17 @@ public class SavedRecordings extends ListActivity {
 			String temp2 = listView.getItemAtPosition(j).toString();
 			File f2 = new File(getExternalFilesDir(location) + "/" + temp2);
 			Uri uri = Uri.fromFile(f2);
-			Intent k=new Intent(android.content.Intent.ACTION_SEND);
+			Intent k = new Intent(android.content.Intent.ACTION_SEND);
 			k.setType("audio/amr");
-			k.putExtra(android.content.Intent.EXTRA_TEXT, "Recorded from Rememo!");
+			k.putExtra(android.content.Intent.EXTRA_TEXT,
+					"Recorded from Rememo!");
 			k.putExtra(Intent.EXTRA_STREAM, uri);
-			startActivity(Intent.createChooser(k,"Share via"));
+			startActivity(Intent.createChooser(k, "Share via"));
+			return true;
+		case R.id.alert:
+			i = (int) info.id;
+			String name = listView.getItemAtPosition(i).toString();
+			startAlarm(name);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
@@ -570,11 +592,11 @@ public class SavedRecordings extends ListActivity {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public static void refresh(String s){
-		if(location.equals("New Memos")){
+
+	public static void refresh(String s) {
+		if (location.equals("New Memos")) {
 			savedRecordingsAdapter.clear();
-			File f = new File(context.getExternalFilesDir(null),
-					"New Memos");
+			File f = new File(context.getExternalFilesDir(null), "New Memos");
 			String[] children = f.list();
 			int i;
 			for (i = 0; i < children.length; i++) {
@@ -582,7 +604,103 @@ public class SavedRecordings extends ListActivity {
 			}
 			savedRecordingsAdapter.notifyDataSetChanged();
 		}
-		
+
+	}
+
+	public void startAlarm(final String n) {
+
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v1 = inflater.inflate(R.layout.timedate_alert, null);
+		Calendar c = Calendar.getInstance();
+		//final int id1 = id;
+		new DatePickerDialog(
+				SavedRecordings.this,
+				new DatePickerDialog.OnDateSetListener() {
+
+					@Override
+					public void onDateSet(DatePicker view, int year,
+							int monthOfYear, int dayOfMonth) {
+						Log.d("TIMER", "ok1");
+						//final int id2 = id1;
+						day = dayOfMonth;
+						Log.d("TIMER", "Day:" + day);
+						month = monthOfYear;
+						Log.d("TIMER", "Month:" + month);
+						mYear = year;
+						Log.d("TIMER", "Year:" + mYear);
+						Calendar c = Calendar.getInstance();
+						new TimePickerDialog(SavedRecordings.this,
+								new TimePickerDialog.OnTimeSetListener() {
+
+									@Override
+									public void onTimeSet(TimePicker view,
+											int hourOfDay, int minute) {
+										//int id3 = id2;
+										// TODO Auto-generated method stub
+										hour = hourOfDay;
+										Log.d("TIMER", "Hour:" + hour);
+										mMinute = minute;
+										Log.d("TIMER", "Minute:" + mMinute);
+
+										AlarmManager alarmManager = (AlarmManager) SavedRecordings.this
+												.getSystemService(SavedRecordings.this.ALARM_SERVICE);
+										Calendar calendar = Calendar
+												.getInstance();
+										calendar.set(mYear, month, day, hour, mMinute, 0);
+										long when = calendar.getTimeInMillis(); // notification
+										
+										//String temp3 = listView.getItemAtPosition(id3).toString();
+
+										Intent intent = new Intent(
+												SavedRecordings.this,
+												ReminderService.class);
+										intent.putExtra("NAME", n);
+										PendingIntent pendingIntent = PendingIntent
+												.getBroadcast(
+														SavedRecordings.this,
+														bID, intent, 0);
+										alarmManager.set(AlarmManager.RTC,
+												when, pendingIntent);
+										bID++;
+
+									}
+								}, c.get(Calendar.HOUR_OF_DAY), c
+										.get(Calendar.MINUTE), false).show();
+
+					}
+				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
+				c.get(Calendar.DAY_OF_MONTH)).show();
+
+	}
+
+	public static class ReminderService extends BroadcastReceiver {
+
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String name = "Name not found";
+			Bundle bb = intent.getExtras();
+			if(bb!=null){
+				name = bb.getString("NAME");
+			}
+			NotificationManager nm = (NotificationManager) context
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+			long when = System.currentTimeMillis(); // notification time
+			Notification notification = new Notification(
+					R.drawable.ic_launcher, "Rememo Reminder", when);
+			notification.defaults |= Notification.DEFAULT_SOUND;
+			notification.flags |= notification.FLAG_AUTO_CANCEL;
+			Intent notificationIntent = new Intent(context,
+					SavedRecordings.class);
+			// notificationIntent.putExtra("KEY", "General");
+			PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+					notificationIntent, 0);
+			notification.setLatestEventInfo(context.getApplicationContext(),
+					name, "Click to see file",
+					contentIntent);
+			nm.notify(bID, notification);
+		}
+
 	}
 } // end class SavedRecordings
 
