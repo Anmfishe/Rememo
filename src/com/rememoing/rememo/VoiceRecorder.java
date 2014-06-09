@@ -4,7 +4,7 @@
  * Taylor Owen
  */
 
-package ucsc.lmcghee.rememo;
+package com.rememoing.rememo;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,6 @@ import java.util.Calendar;
 
 
 
-import ucsc.lmcghee.rememo.R.color;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -1,4 +1,4 @@
-package ucsc.lmcghee.rememo;
+package com.rememoing.rememo;
 
 import java.io.File;
 import java.util.ArrayList;
